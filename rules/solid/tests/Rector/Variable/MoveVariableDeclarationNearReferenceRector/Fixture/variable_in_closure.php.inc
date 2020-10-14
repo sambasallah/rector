@@ -2,7 +2,7 @@
 
 function variableInClosure()
 {
-    return function () {
+    $closure = function () {
         $var = 1;
         if (mktime() === false) {
             return $var;
@@ -16,7 +16,7 @@ function variableInClosure()
 
 function variableInClosure()
 {
-    return function () {
+    $closure = function () {
         if (mktime() === false) {
             $var = 1;
             return $var;
