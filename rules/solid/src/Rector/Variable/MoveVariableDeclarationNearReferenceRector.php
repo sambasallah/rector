@@ -10,10 +10,8 @@ use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\Namespace_;
-use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\RectorDefinition\CodeSample;
 use Rector\Core\RectorDefinition\RectorDefinition;
@@ -99,36 +97,34 @@ CODE_SAMPLE
      * Find the first node within the same method being a usage of the assigned variable,
      * but not the original assignment itself.
      *
-    * @param ClassMethod|Function_|Class_|Namespace_|Closure $parentScope
+     * @param ClassMethod|Function_|Class_|Namespace_|Closure $parentScope
      */
-    private function findFirstVariableUsageInScope(Variable $desiredVariable, Assign $assign, Node $parentScope): ?Variable
-    {
+    private function findFirstVariableUsageInScope(
+        Variable $desiredVariable,
+        Assign $assign,
+        Node $parentScope
+    ): ?Variable {
         $desiredVariableName = $this->getName($desiredVariable);
 
-        $firstVariableUsage = $this->betterNodeFinder->findFirst(
+        return $this->betterNodeFinder->findFirst(
             $parentScope->getStmts(),
-            function (Node $node) use ($desiredVariableName, $assign, $desiredVariable): bool {
+            function (Node $node) use ($desiredVariableName, $assign): bool {
                 if (! $node instanceof Variable) {
                     return false;
                 }
 
-                if ($this->isOriginalAssign($node, $assign)) {
+                if ($this->isVariableInOriginalAssign($node, $assign)) {
                     return false;
                 }
 
-                return $this->areNodesEqual($node, $desiredVariable);
-                // return $this->isName($node, $desiredVariableName);
+                return $this->isName($node, $desiredVariableName);
             }
         );
-
-        /** @var Variable|null $firstVariableUsage */
-        return $firstVariableUsage;
     }
 
-    private function isOriginalAssign(Node $node, Assign $assign): bool
+    private function isVariableInOriginalAssign(Variable $variable, Assign $assign): bool
     {
-        $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-
+        $parentNode = $variable->getAttribute(AttributeKey::PARENT_NODE);
         return $parentNode === $assign;
     }
 }
