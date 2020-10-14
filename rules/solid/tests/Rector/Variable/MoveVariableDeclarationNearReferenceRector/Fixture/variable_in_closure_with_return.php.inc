@@ -1,6 +1,6 @@
 <?php
 
-function variableInClosure()
+function variableInClosureWithReturn()
 {
     return function () {
         $var = 1;
@@ -14,7 +14,7 @@ function variableInClosure()
 -----
 <?php
 
-function variableInClosure()
+function variableInClosureWithReturn()
 {
     return function () {
         if (mktime() === false) {

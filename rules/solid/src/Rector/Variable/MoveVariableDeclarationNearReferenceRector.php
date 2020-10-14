@@ -6,7 +6,14 @@ namespace Rector\SOLID\Rector\Variable;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Function_;
+use PhpParser\Node\Stmt\Namespace_;
+use Rector\Core\Exception\ShouldNotHappenException;
 use Rector\Core\Rector\AbstractRector;
 use Rector\Core\RectorDefinition\CodeSample;
 use Rector\Core\RectorDefinition\RectorDefinition;
@@ -73,15 +80,16 @@ CODE_SAMPLE
             return null;
         }
 
-        $usage = $this->findFirstVariableUsageInScope($variable, $assign, $parentScope);
-        if ($usage === null) {
+        $firstVariableUsage = $this->findFirstVariableUsageInScope($variable, $assign, $parentScope);
+        if ($firstVariableUsage === null) {
             return null;
         }
 
-        $usageStatement = $usage->getAttribute(AttributeKey::CURRENT_STATEMENT);
-        $assignStatement = $assign->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        $firstVariableUsageStatement = $firstVariableUsage->getAttribute(AttributeKey::CURRENT_STATEMENT);
 
-        $this->addNodeBeforeNode($assignStatement, $usageStatement);
+        $assignStatement = $assign->getAttribute(AttributeKey::CURRENT_STATEMENT);
+        $this->addNodeBeforeNode($assignStatement, $firstVariableUsageStatement);
+
         $this->removeNode($assignStatement);
 
         return $node;
@@ -90,27 +98,36 @@ CODE_SAMPLE
     /**
      * Find the first node within the same method being a usage of the assigned variable,
      * but not the original assignment itself.
+     *
+    * @param ClassMethod|Function_|Class_|Namespace_|Closure $parentScope
      */
-    private function findFirstVariableUsageInScope(Variable $variable, Assign $assign, Node $parentScope): ?Node
+    private function findFirstVariableUsageInScope(Variable $desiredVariable, Assign $assign, Node $parentScope): ?Variable
     {
-        return $this->betterNodeFinder->findFirst(
+        $desiredVariableName = $this->getName($desiredVariable);
+
+        $firstVariableUsage = $this->betterNodeFinder->findFirst(
             (array) $parentScope->getStmts(),
-            function (Node $node) use ($variable, $assign): bool {
-                return $this->isVariable($node) &&
-                    ! $this->isOriginalAssign($node, $assign) &&
-                    $this->betterStandardPrinter->areNodesEqual($node, $variable);
+            function (Node $node) use ($desiredVariableName, $assign): bool {
+                if (! $node instanceof Variable) {
+                    return false;
+                }
+
+                if ($this->isOriginalAssign($node, $assign)) {
+                    return false;
+                }
+
+                return $this->isName($node, $desiredVariableName);
             }
         );
+
+        /** @var Variable|null $firstVariableUsage */
+        return $firstVariableUsage;
     }
 
     private function isOriginalAssign(Node $node, Assign $assign): bool
     {
         $parentNode = $node->getAttribute(AttributeKey::PARENT_NODE);
-        return $parentNode === $assign;
-    }
 
-    private function isVariable(Node $node): bool
-    {
-        return $node instanceof Variable;
+        return $parentNode === $assign;
     }
 }
