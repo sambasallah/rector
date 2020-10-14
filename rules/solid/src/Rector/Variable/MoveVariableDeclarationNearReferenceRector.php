@@ -106,8 +106,8 @@ CODE_SAMPLE
         $desiredVariableName = $this->getName($desiredVariable);
 
         $firstVariableUsage = $this->betterNodeFinder->findFirst(
-            (array) $parentScope->getStmts(),
-            function (Node $node) use ($desiredVariableName, $assign): bool {
+            $parentScope->getStmts(),
+            function (Node $node) use ($desiredVariableName, $assign, $desiredVariable): bool {
                 if (! $node instanceof Variable) {
                     return false;
                 }
@@ -116,7 +116,8 @@ CODE_SAMPLE
                     return false;
                 }
 
-                return $this->isName($node, $desiredVariableName);
+                return $this->areNodesEqual($node, $desiredVariable);
+                // return $this->isName($node, $desiredVariableName);
             }
         );
 
