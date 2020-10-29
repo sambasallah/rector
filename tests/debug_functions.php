@@ -12,10 +12,9 @@ require __DIR__ . '/../vendor/autoload.php';
  */
 function print_node($node): void
 {
-    $standard = new Standard();
-
     if (is_array($node)) {
         foreach ($node as $singleNode) {
+            $standard = new Standard();
             $printedContent = $standard->prettyPrint([$singleNode]);
             dump($printedContent);
         }

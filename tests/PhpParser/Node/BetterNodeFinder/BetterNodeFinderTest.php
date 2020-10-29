@@ -40,9 +40,9 @@ final class BetterNodeFinderTest extends AbstractKernelTestCase
     public function testFindFirstAncestorInstanceOf(): void
     {
         $variable = $this->betterNodeFinder->findFirstInstanceOf($this->nodes, Variable::class);
-        $class = $this->betterNodeFinder->findFirstInstanceOf($this->nodes, Class_::class);
 
         $this->assertNotNull($variable);
+        $class = $this->betterNodeFinder->findFirstInstanceOf($this->nodes, Class_::class);
         $this->assertNotNull($class);
 
         $this->assertInstanceOf(Variable::class, $variable);

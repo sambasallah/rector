@@ -55,15 +55,13 @@ final class FilesFinderTest extends AbstractKernelTestCase
     {
         $foundFiles = $this->filesFinder->findInDirectoriesAndFiles([__DIR__ . '/Source'], ['yaml', 'yml']);
         $this->assertCount(2, $foundFiles);
-
-        $foundFileNames = [];
         foreach ($foundFiles as $foundFile) {
+            $foundFileNames = [];
             $foundFileNames[] = $foundFile->getFilename();
         }
 
-        $expectedFoundFileNames = ['some_config.yml', 'other_config.yaml'];
-
         sort($foundFileNames);
+        $expectedFoundFileNames = ['some_config.yml', 'other_config.yaml'];
         sort($expectedFoundFileNames);
         $this->assertSame($expectedFoundFileNames, $foundFileNames);
     }
