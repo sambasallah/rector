@@ -98,8 +98,9 @@ final class DoctrineDocBlockResolver
         if ($phpDocInfo === null) {
             return false;
         }
+        $hasTypeColumnTagValueNode = $phpDocInfo->hasByType(ColumnTagValueNode::class);
 
-        if ($phpDocInfo->hasByType(ColumnTagValueNode::class)) {
+        if ($hasTypeColumnTagValueNode) {
             return true;
         }
 
@@ -123,8 +124,9 @@ final class DoctrineDocBlockResolver
         if ($phpDocInfo === null) {
             return false;
         }
+        $hasTypeEntityTagValueNode = $phpDocInfo->hasByType(EntityTagValueNode::class);
 
-        if ($phpDocInfo->hasByType(EntityTagValueNode::class)) {
+        if ($hasTypeEntityTagValueNode) {
             return true;
         }
 
