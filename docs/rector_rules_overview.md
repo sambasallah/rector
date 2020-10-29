@@ -14335,7 +14335,7 @@ Classes that have no children nor are used, should have abstract
 
 ### `MoveVariableDeclarationNearReferenceRector`
 
-- class: [`Rector\SOLID\Rector\Variable\MoveVariableDeclarationNearReferenceRector`](/rules/solid/src/Rector/Variable_/MoveVariableDeclarationNearReferenceRector.php)
+- class: [`Rector\SOLID\Rector\Assign\MoveVariableDeclarationNearReferenceRector`](/rules/solid/src/Rector/Variable_/MoveVariableDeclarationNearReferenceRector.php)
 - [test fixtures](/rules/solid/tests/Rector/Variable_/MoveVariableDeclarationNearReferenceRector/Fixture)
 
 Variable declarations should be moved directly above the first usage of those variables

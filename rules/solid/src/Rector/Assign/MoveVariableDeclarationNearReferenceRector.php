@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\SOLID\Rector\Variable;
+namespace Rector\SOLID\Rector\Assign;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\Assign;
@@ -19,7 +19,7 @@ use Rector\NodeNestingScope\ParentScopeFinder;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 
 /**
- * @see \Rector\SOLID\Tests\Rector\Variable\MoveVariableDeclarationNearReferenceRector\MoveVariableDeclarationNearReferenceRectorTest
+ * @see \Rector\SOLID\Tests\Rector\Assign\MoveVariableDeclarationNearReferenceRector\MoveVariableDeclarationNearReferenceRectorTest
  */
 final class MoveVariableDeclarationNearReferenceRector extends AbstractRector
 {
@@ -97,7 +97,7 @@ CODE_SAMPLE
      * Find the first node within the same method being a usage of the assigned variable,
      * but not the original assignment itself.
      *
-     * @param ClassMethod|Function_|Class_|Namespace_|Closure $parentScope
+     * @param ClassMethod|Function_|Class_|Namespace_|\Closure $parentScope
      */
     private function findFirstVariableUsageInScope(
         Variable $desiredVariable,

@@ -107,11 +107,6 @@ final class NodesToAddCollector implements NodeCollectorInterface
             return spl_object_hash($node);
         }
 
-        // special case for "If_"
-        if ($node instanceof If_) {
-            return spl_object_hash($node);
-        }
-
         /** @var Expression|null $foundNode */
         $foundNode = $this->betterNodeFinder->findFirstAncestorInstanceOf($node, Expression::class);
         if ($foundNode === null) {
