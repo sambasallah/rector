@@ -97,17 +97,17 @@ CODE_SAMPLE
      * Find the first node within the same method being a usage of the assigned variable,
      * but not the original assignment itself.
      *
-     * @param ClassMethod|Function_|Class_|Namespace_|\Closure $parentScope
+     * @param ClassMethod|Function_|Class_|Namespace_|Closure $parentScopeNode
      */
     private function findFirstVariableUsageInScope(
         Variable $desiredVariable,
         Assign $assign,
-        Node $parentScope
+        Node $parentScopeNode
     ): ?Variable {
         $desiredVariableName = $this->getName($desiredVariable);
 
         return $this->betterNodeFinder->findFirst(
-            $parentScope->getStmts(),
+            (array) $parentScopeNode->stmts,
             function (Node $node) use ($desiredVariableName, $assign): bool {
                 if (! $node instanceof Variable) {
                     return false;
