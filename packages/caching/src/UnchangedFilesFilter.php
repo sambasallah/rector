@@ -25,17 +25,16 @@ final class UnchangedFilesFilter
      */
     public function filterAndJoinWithDependentFileInfos(array $fileInfos): array
     {
-        $changedFileInfos = [];
-        $dependentFileInfos = [];
-
         foreach ($fileInfos as $fileInfo) {
             if (! $this->changedFilesDetector->hasFileChanged($fileInfo)) {
                 continue;
             }
+            $changedFileInfos = [];
 
             $changedFileInfos[] = $fileInfo;
 
             $this->changedFilesDetector->invalidateFile($fileInfo);
+            $dependentFileInfos = [];
 
             $dependentFileInfos = array_merge(
                 $dependentFileInfos,

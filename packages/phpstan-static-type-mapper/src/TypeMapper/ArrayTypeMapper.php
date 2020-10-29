@@ -101,20 +101,19 @@ final class ArrayTypeMapper implements TypeMapperInterface
      */
     public function mapToDocString(Type $type, ?Type $parentType = null): string
     {
-        $itemType = $type->getItemType();
-
         $normalizedType = $this->typeNormalizer->normalizeArrayOfUnionToUnionArray($type);
         if ($normalizedType instanceof UnionType) {
             return $this->mapArrayUnionTypeToDocString($type, $normalizedType);
         }
+        $itemType = $type->getItemType();
 
         return $this->phpStanStaticTypeMapper->mapToDocString($itemType, $parentType) . '[]';
     }
 
     private function createUnionType(UnionType $unionType): ArrayTypeNode
     {
-        $unionedArrayType = [];
         foreach ($unionType->getTypes() as $unionedType) {
+            $unionedArrayType = [];
             $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($unionedType);
             $unionedArrayType[(string) $typeNode] = $typeNode;
         }
@@ -164,13 +163,11 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
     private function createGenericArrayType(ArrayType $arrayType, bool $withKey = false): AttributeAwareGenericTypeNode
     {
-        $itemTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($arrayType->getItemType());
-
-        $attributeAwareIdentifierTypeNode = new AttributeAwareIdentifierTypeNode('array');
         if ($withKey) {
+            $itemTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($arrayType->getItemType());
             $keyTypeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($arrayType->getKeyType());
-            $genericTypes = [$keyTypeNode, $itemTypeNode];
         } else {
+            $genericTypes = [$keyTypeNode, $itemTypeNode];
             $genericTypes = [$itemTypeNode];
         }
 
@@ -180,6 +177,7 @@ final class ArrayTypeMapper implements TypeMapperInterface
             /** @var AttributeAwareNodeInterface $genericType */
             $genericType->setAttribute(self::HAS_GENERIC_TYPE_PARENT, $withKey);
         }
+        $attributeAwareIdentifierTypeNode = new AttributeAwareIdentifierTypeNode('array');
 
         $attributeAwareIdentifierTypeNode->setAttribute(self::HAS_GENERIC_TYPE_PARENT, $withKey);
 
@@ -188,9 +186,8 @@ final class ArrayTypeMapper implements TypeMapperInterface
 
     private function mapArrayUnionTypeToDocString(ArrayType $arrayType, UnionType $unionType): string
     {
-        $unionedTypesAsString = [];
-
         foreach ($unionType->getTypes() as $unionedArrayItemType) {
+            $unionedTypesAsString = [];
             $unionedTypesAsString[] = $this->phpStanStaticTypeMapper->mapToDocString(
                 $unionedArrayItemType,
                 $arrayType

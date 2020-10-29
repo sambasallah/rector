@@ -22,14 +22,13 @@ final class ClassMethodVendorLockResolver extends AbstractNodeVendorLockResolver
      */
     public function isRemovalVendorLocked(ClassMethod $classMethod): bool
     {
-        /** @var string $classMethodName */
-        $classMethodName = $this->nodeNameResolver->getName($classMethod);
-
         /** @var Class_|Interface_|null $classLike */
         $classLike = $classMethod->getAttribute(AttributeKey::CLASS_NODE);
         if ($classLike === null) {
             return false;
         }
+        /** @var string $classMethodName */
+        $classMethodName = $this->nodeNameResolver->getName($classMethod);
 
         if ($this->isMethodVendorLockedByInterface($classLike, $classMethodName)) {
             return true;

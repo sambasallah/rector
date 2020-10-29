@@ -32,10 +32,8 @@ final class KernelGetContainerAfterBootReturnTypeExtension implements DynamicMet
         MethodCall $methodCall,
         Scope $scope
     ): Type {
-        $returnType = ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
-
         if (! $this->isCalledAfterBoot($scope, $methodCall)) {
-            return $returnType;
+            return ParametersAcceptorSelector::selectSingle($methodReflection->getVariants())->getReturnType();
         }
 
         if ($returnType instanceof UnionType) {

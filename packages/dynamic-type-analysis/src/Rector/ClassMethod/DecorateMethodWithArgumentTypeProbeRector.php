@@ -74,9 +74,8 @@ CODE_SAMPLE
      */
     private function createRecordArgumentTypeStaticCalls(ClassMethod $classMethod): array
     {
-        $probeStaticCalls = [];
-
         foreach ($classMethod->params as $i => $param) {
+            $probeStaticCalls = [];
             $probeStaticCall = $this->createFromVariableAndPosition($param, $i);
             $probeStaticCalls[] = new Expression($probeStaticCall);
         }

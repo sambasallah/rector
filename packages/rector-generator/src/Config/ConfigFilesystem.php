@@ -87,9 +87,8 @@ final class ConfigFilesystem
         // 2. add the set() call
         $this->decorateNamesToFullyQualified($setConfigNodes);
 
-        $nodeTraverser = new NodeTraverser();
-
         $this->addNewServiceToSymfonyPhpConfigRector->setRectorClass($rectorFqnName);
+        $nodeTraverser = new NodeTraverser();
         $nodeTraverser->addVisitor($this->addNewServiceToSymfonyPhpConfigRector);
         $setConfigNodes = $nodeTraverser->traverse($setConfigNodes);
 

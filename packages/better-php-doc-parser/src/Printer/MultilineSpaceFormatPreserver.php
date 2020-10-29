@@ -75,12 +75,12 @@ final class MultilineSpaceFormatPreserver
     ): ?AttributeAwareNodeInterface {
         /** @var string $originalContent */
         $originalContent = $attributeAwareNode->getAttribute(Attribute::ORIGINAL_CONTENT);
-        $oldSpaces = Strings::matchAll($originalContent, '#\s+#ms');
 
         $currentText = $this->resolveCurrentPhpDocNodeText($attributeAwareNode);
         if ($currentText === null) {
             return null;
         }
+        $oldSpaces = Strings::matchAll($originalContent, '#\s+#ms');
 
         $newParts = Strings::split($currentText, '#\s+#');
 
@@ -88,9 +88,8 @@ final class MultilineSpaceFormatPreserver
         if (count($oldSpaces) + 1 !== count($newParts)) {
             return null;
         }
-
-        $newText = '';
         foreach ($newParts as $key => $newPart) {
+            $newText = '';
             $newText .= $newPart;
             if (isset($oldSpaces[$key])) {
                 if (Strings::match($oldSpaces[$key][0], self::NEWLINE_WITH_SPACE_REGEX)) {

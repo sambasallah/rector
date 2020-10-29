@@ -85,15 +85,14 @@ final class PhpDocInfoFactory
             if ($node->getComments() !== []) {
                 return null;
             }
-
+        } else {
             // create empty node
             $content = '';
-            $tokens = [];
-            $phpDocNode = new AttributeAwarePhpDocNode([]);
-        } else {
             $content = $node->getDocComment()
                 ->getText();
+            $tokens = [];
             $tokens = $this->lexer->tokenize($content);
+            $phpDocNode = new AttributeAwarePhpDocNode([]);
             $phpDocNode = $this->parseTokensToPhpDocNode($tokens);
             $this->setPositionOfLastToken($phpDocNode);
         }

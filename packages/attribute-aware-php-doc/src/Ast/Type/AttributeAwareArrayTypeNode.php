@@ -22,9 +22,8 @@ final class AttributeAwareArrayTypeNode extends ArrayTypeNode implements Attribu
             return sprintf('(%s)[]', (string) $this->type);
         }
 
-        $typeAsString = (string) $this->type;
-
         if ($this->isGenericArrayCandidate($this->type)) {
+            $typeAsString = (string) $this->type;
             return sprintf('array<%s>', $typeAsString);
         }
 
@@ -62,13 +61,12 @@ final class AttributeAwareArrayTypeNode extends ArrayTypeNode implements Attribu
 
     private function printUnionType(AttributeAwareUnionTypeNode $attributeAwareUnionTypeNode): string
     {
-        $unionedTypes = [];
-
         if ($attributeAwareUnionTypeNode->isWrappedWithBrackets()) {
             return $attributeAwareUnionTypeNode . '[]';
         }
 
         foreach ($attributeAwareUnionTypeNode->types as $unionedType) {
+            $unionedTypes = [];
             $unionedTypes[] = $unionedType . '[]';
         }
 

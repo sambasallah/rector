@@ -20,9 +20,9 @@ final class DoctrineTest extends AbstractPhpDocInfoPrinterTest
     public function testClass(string $docFilePath, Node $node): void
     {
         $docComment = $this->smartFileSystem->readFile($docFilePath);
-        $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($docComment, $node);
 
         $fileInfo = new SmartFileInfo($docFilePath);
+        $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($docComment, $node);
         $relativeFilePathFromCwd = $fileInfo->getRelativeFilePathFromCwd();
 
         $this->assertSame(

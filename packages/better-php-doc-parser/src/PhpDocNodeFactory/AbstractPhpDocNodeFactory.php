@@ -103,9 +103,9 @@ abstract class AbstractPhpDocNodeFactory
     protected function matchCurlyBracketOpeningAndClosingSpace(string $annotationContent): OpeningAndClosingSpace
     {
         $match = Strings::match($annotationContent, self::OPENING_SPACE_REGEX);
-        $openingSpace = $match['opening_space'] ?? '';
 
         $match = Strings::match($annotationContent, self::CLOSING_SPACE_REGEX);
+        $openingSpace = $match['opening_space'] ?? '';
         $closingSpace = $match['closing_space'] ?? '';
 
         return new OpeningAndClosingSpace($openingSpace, $closingSpace);

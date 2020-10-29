@@ -207,12 +207,11 @@ final class ParsedNodeCollector
      */
     public function findNewsByClass(string $className): array
     {
-        $newsByClass = [];
-
         foreach ($this->news as $new) {
             if (! $this->nodeNameResolver->isName($new->class, $className)) {
                 continue;
             }
+            $newsByClass = [];
 
             $newsByClass[] = $new;
         }

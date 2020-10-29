@@ -53,13 +53,12 @@ final class ArrayCallableMethodReferenceAnalyzer
 
         /** @var String_ $string */
         $string = $array->items[1]->value;
-
-        $methodName = $string->value;
         $className = $array->getAttribute(AttributeKey::CLASS_NAME);
 
         if ($className === null) {
             return null;
         }
+        $methodName = $string->value;
 
         return new ArrayCallable($className, $methodName);
     }

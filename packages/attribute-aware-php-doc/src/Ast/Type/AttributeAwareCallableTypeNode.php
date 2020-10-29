@@ -26,12 +26,11 @@ final class AttributeAwareCallableTypeNode extends CallableTypeNode implements A
         /** @var IdentifierTypeNode|GenericTypeNode $returnType */
         $returnType = $this->returnType;
 
-        $parameterTypeString = $this->createParameterTypeString();
-
         $returnTypeAsString = (string) $returnType;
         if (Strings::contains($returnTypeAsString, '|')) {
             $returnTypeAsString = '(' . $returnTypeAsString . ')';
         }
+        $parameterTypeString = $this->createParameterTypeString();
 
         $parameterTypeString = $this->normalizeParameterType($parameterTypeString, $returnTypeAsString);
         $returnTypeAsString = $this->normalizeReturnType($parameterTypeString, $returnTypeAsString);
@@ -41,8 +40,8 @@ final class AttributeAwareCallableTypeNode extends CallableTypeNode implements A
 
     private function createParameterTypeString(): string
     {
-        $parameterTypeStrings = [];
         foreach ($this->parameters as $parameter) {
+            $parameterTypeStrings = [];
             $parameterTypeStrings[] = trim((string) $parameter);
         }
 

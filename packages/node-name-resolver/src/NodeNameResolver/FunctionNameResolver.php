@@ -21,11 +21,10 @@ final class FunctionNameResolver implements NodeNameResolverInterface
      */
     public function resolve(Node $node): ?string
     {
-        $bareName = (string) $node->name;
-
         $namespaceName = $node->getAttribute(AttributeKey::NAMESPACE_NAME);
 
         if ($namespaceName) {
+            $bareName = (string) $node->name;
             return $namespaceName . '\\' . $bareName;
         }
 

@@ -43,13 +43,10 @@ final class DependencyResolver
     public function resolveDependencies(Node $node, Scope $scope): array
     {
         $fileInfos = $this->configuration->getFileInfos();
-
-        $analysedFileAbsolutesPaths = [];
         foreach ($fileInfos as $analysedFile) {
+            $analysedFileAbsolutesPaths = [];
             $analysedFileAbsolutesPaths[] = $analysedFile->getRealPath();
         }
-
-        $dependencies = [];
         foreach ($this->phpStanDependencyResolver->resolveDependencies($node, $scope) as $nodeDependency) {
             $dependencyFile = $nodeDependency->getFileName();
             if (! $dependencyFile) {
@@ -64,6 +61,7 @@ final class DependencyResolver
             if (! in_array($dependencyFile, $analysedFileAbsolutesPaths, true)) {
                 continue;
             }
+            $dependencies = [];
 
             $dependencies[] = $dependencyFile;
         }

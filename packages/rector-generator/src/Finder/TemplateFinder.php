@@ -37,9 +37,8 @@ final class TemplateFinder
      */
     public function find(RectorRecipe $rectorRecipe): array
     {
-        $filePaths = [];
-
         if ($rectorRecipe->getExtraFileContent()) {
+            $filePaths = [];
             $filePaths[] = __DIR__ . '/../../templates/rules/__package__/tests/Rector/__Category__/__Name__/Source/extra_file.php.inc';
         }
 

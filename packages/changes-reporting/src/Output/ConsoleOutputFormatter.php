@@ -72,10 +72,9 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
         if ($errorAndDiffCollector->getErrors() !== []) {
             return;
         }
-
+        $message = 'Rector is done!';
         $changeCount = $errorAndDiffCollector->getFileDiffsCount()
                      + $errorAndDiffCollector->getRemovedAndAddedFilesCount();
-        $message = 'Rector is done!';
         if ($changeCount > 0) {
             $message .= sprintf(
                 ' %d file%s %s.',
@@ -107,9 +106,8 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
         $message = sprintf('%d file%s with changes', count($fileDiffs), count($fileDiffs) === 1 ? '' : 's');
 
         $this->symfonyStyle->title($message);
-
-        $i = 0;
         foreach ($fileDiffs as $fileDiff) {
+            $i = 0;
             $relativeFilePath = $fileDiff->getRelativeFilePath();
             $message = sprintf('<options=bold>%d) %s</>', ++$i, $relativeFilePath);
 
@@ -136,16 +134,15 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
             $errorMessage = $error->getMessage();
             $errorMessage = $this->normalizePathsToRelativeWithLine($errorMessage);
 
-            $message = sprintf(
-                'Could not process "%s" file%s, due to: %s"%s".',
-                $error->getFileInfo()
-                    ->getRelativeFilePathFromCwd(),
-                $error->getRectorClass() ? ' by "' . $error->getRectorClass() . '"' : '',
-                PHP_EOL,
-                $errorMessage
-            );
-
             if ($error->getLine()) {
+                $message = sprintf(
+                    'Could not process "%s" file%s, due to: %s"%s".',
+                    $error->getFileInfo()
+                        ->getRelativeFilePathFromCwd(),
+                    $error->getRectorClass() ? ' by "' . $error->getRectorClass() . '"' : '',
+                    PHP_EOL,
+                    $errorMessage
+                );
                 $message .= ' On line: ' . $error->getLine();
             }
 
@@ -179,8 +176,8 @@ final class ConsoleOutputFormatter implements OutputFormatterInterface
         $this->symfonyStyle->warning($message);
 
         if ($this->symfonyStyle->isVeryVerbose()) {
-            $i = 0;
             foreach ($errorAndDiffCollector->getRemovedNodes() as $removedNode) {
+                $i = 0;
                 /** @var SmartFileInfo $fileInfo */
                 $fileInfo = $removedNode->getAttribute(AttributeKey::FILE_INFO);
                 $message = sprintf(

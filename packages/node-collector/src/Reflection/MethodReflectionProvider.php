@@ -56,10 +56,9 @@ final class MethodReflectionProvider
             return [];
         }
 
-        $parameterTypes = [];
-
         $parameterReflections = $this->getParameterReflectionsFromMethodReflection($methodReflection);
         foreach ($parameterReflections as $phpParameterReflection) {
+            $parameterTypes = [];
             $parameterTypes[] = $phpParameterReflection->getType();
         }
 
@@ -92,7 +91,6 @@ final class MethodReflectionProvider
     public function provideByStaticCall(StaticCall $staticCall): ?MethodReflection
     {
         $objectType = $this->nodeTypeResolver->resolve($staticCall->class);
-        $classes = TypeUtils::getDirectClassNames($objectType);
 
         $methodName = $this->nodeNameResolver->getName($staticCall->name);
         if ($methodName === null) {
@@ -104,6 +102,7 @@ final class MethodReflectionProvider
         if (! $scope instanceof Scope) {
             throw new ShouldNotHappenException();
         }
+        $classes = TypeUtils::getDirectClassNames($objectType);
 
         foreach ($classes as $class) {
             $methodReflection = $this->provideByClassAndMethodName($class, $methodName, $scope);

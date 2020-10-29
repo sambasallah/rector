@@ -395,11 +395,10 @@ final class NodeTypeResolver
             return new ObjectWithoutClassType();
         }
 
-        $types = [];
-
         /** @var Class_ $class */
         $class = $new->class;
         if ($class->extends !== null) {
+            $types = [];
             $parentClass = (string) $class->extends;
             $types[] = new FullyQualifiedObjectType($parentClass);
         }
@@ -447,12 +446,11 @@ final class NodeTypeResolver
         if (! $type->isSubTypeOf(new NonEmptyArrayType())->yes()) {
             return $type;
         }
-
-        $otherType = null;
         foreach ($type->getTypes() as $intersectionedType) {
             if ($intersectionedType instanceof NonEmptyArrayType) {
                 continue;
             }
+            $otherType = null;
 
             $otherType = $intersectionedType;
             break;

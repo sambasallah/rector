@@ -65,6 +65,11 @@ final class JoinTablePhpDocNodeFactory extends AbstractPhpDocNodeFactory impleme
             $annotationContent,
             self::JOIN_COLUMNS
         );
+        // inversed join columns
+        $inverseJoinColumnsAnnotationContent = $this->annotationContentResolver->resolveNestedKey(
+            $annotationContent,
+            self::INVERSE_JOIN_COLUMNS
+        );
 
         $joinColumnValuesTags = $this->createJoinColumnTagValues(
             $joinColumnsAnnotationContent,
@@ -74,12 +79,6 @@ final class JoinTablePhpDocNodeFactory extends AbstractPhpDocNodeFactory impleme
 
         $joinColumnsOpeningAndClosingSpace = $this->matchCurlyBracketOpeningAndClosingSpace(
             $joinColumnsAnnotationContent
-        );
-
-        // inversed join columns
-        $inverseJoinColumnsAnnotationContent = $this->annotationContentResolver->resolveNestedKey(
-            $annotationContent,
-            self::INVERSE_JOIN_COLUMNS
         );
         $inverseJoinColumnValuesTags = $this->createJoinColumnTagValues(
             $inverseJoinColumnsAnnotationContent,
@@ -107,10 +106,6 @@ final class JoinTablePhpDocNodeFactory extends AbstractPhpDocNodeFactory impleme
      */
     private function createJoinColumnTagValues(string $annotationContent, JoinTable $joinTable, string $type): array
     {
-        $joinColumnContents = $this->matchJoinColumnContents($annotationContent);
-
-        $joinColumnValuesTags = [];
-
         if (! in_array($type, [self::JOIN_COLUMNS, self::INVERSE_JOIN_COLUMNS], true)) {
             throw new ShouldNotHappenException();
         }
@@ -118,6 +113,8 @@ final class JoinTablePhpDocNodeFactory extends AbstractPhpDocNodeFactory impleme
         $joinColumns = $type === self::JOIN_COLUMNS ? $joinTable->joinColumns : $joinTable->inverseJoinColumns;
 
         foreach ($joinColumns as $key => $joinColumn) {
+            $joinColumnContents = $this->matchJoinColumnContents($annotationContent);
+            $joinColumnValuesTags = [];
             $subAnnotation = $joinColumnContents[$key];
 
             $items = $this->annotationItemsResolver->resolve($joinColumn);

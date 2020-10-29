@@ -60,10 +60,9 @@ final class RectorsDocumentationPrinter
      */
     public function printRectors(array $rectors, bool $isRectorProject): string
     {
-        $groupedRectors = $this->groupRectorsByPackage($rectors);
-
-        $content = '';
         if ($isRectorProject) {
+            $groupedRectors = $this->groupRectorsByPackage($rectors);
+            $content = '';
             $content .= $this->printGroupsMenu($groupedRectors);
         }
 
@@ -104,9 +103,9 @@ final class RectorsDocumentationPrinter
      */
     private function groupRectorsByPackage(array $rectors): array
     {
-        $rectorsByPackage = [];
         foreach ($rectors as $rector) {
             $rectorClass = get_class($rector);
+            $rectorsByPackage = [];
             $package = $this->rectorMetadataResolver->resolvePackageFromRectorClass($rectorClass);
             $rectorsByPackage[$package][] = $rector;
         }
@@ -122,10 +121,10 @@ final class RectorsDocumentationPrinter
      */
     private function printGroupsMenu(array $rectorsByGroup): string
     {
-        $content = '';
         foreach ($rectorsByGroup as $group => $rectors) {
             $escapedGroup = str_replace('\\', '', $group);
             $escapedGroup = Strings::webalize($escapedGroup, '_');
+            $content = '';
             $message = sprintf('- [%s](#%s) (%d)', $group, $escapedGroup, count($rectors));
             $content .= $message . PHP_EOL;
         }

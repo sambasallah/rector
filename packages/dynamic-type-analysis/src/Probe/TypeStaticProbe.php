@@ -54,9 +54,9 @@ final class TypeStaticProbe
         }
 
         if (is_array($value)) {
-            // try to resolve single nested array types
-            $arrayValueTypes = [];
             foreach ($value as $singleValue) {
+                // try to resolve single nested array types
+                $arrayValueTypes = [];
                 $arrayValueTypes[] = self::resolveValueTypeToString($singleValue);
             }
 
@@ -99,11 +99,10 @@ final class TypeStaticProbe
         }
 
         $probeItems = self::getProbeStorage()::getProbeItems();
-
-        $itemData = [];
         foreach ($probeItems as $probeItem) {
             $probeItem = trim($probeItem);
             [$type, $methodReference, $position] = explode(';', $probeItem);
+            $itemData = [];
 
             $itemData[$methodReference][$position][] = $type;
         }

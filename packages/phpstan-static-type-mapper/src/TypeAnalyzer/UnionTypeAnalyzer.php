@@ -16,22 +16,21 @@ final class UnionTypeAnalyzer
 {
     public function analyseForNullableAndIterable(UnionType $unionType): ?UnionTypeAnalysis
     {
-        $isNullableType = false;
-        $hasIterable = false;
-        $hasArray = false;
-
         foreach ($unionType->getTypes() as $unionedType) {
             if ($unionedType instanceof IterableType) {
+                $hasIterable = false;
                 $hasIterable = true;
                 continue;
             }
 
             if ($unionedType instanceof ArrayType) {
+                $hasArray = false;
                 $hasArray = true;
                 continue;
             }
 
             if ($unionedType instanceof NullType) {
+                $isNullableType = false;
                 $isNullableType = true;
                 continue;
             }

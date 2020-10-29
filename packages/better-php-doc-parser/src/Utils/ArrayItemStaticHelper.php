@@ -32,10 +32,9 @@ final class ArrayItemStaticHelper
             return [];
         }
 
-        $itemsOrder = [];
-
         $matches = Strings::matchAll($content, self::ITEM_EQUALS_REGEX);
         foreach ($matches as $match) {
+            $itemsOrder = [];
             $itemsOrder[] = $match['item'];
         }
 

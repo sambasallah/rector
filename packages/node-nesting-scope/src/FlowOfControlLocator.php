@@ -14,9 +14,8 @@ final class FlowOfControlLocator
 {
     public function resolveNestingHashFromFunctionLike(FunctionLike $functionLike, Node $checkedNode): string
     {
-        $nestingHash = spl_object_hash($functionLike) . '__';
-
         $currentNode = $checkedNode;
+        $previous = $currentNode;
         $previous = $currentNode;
         while ($currentNode = $currentNode->getAttribute(AttributeKey::PARENT_NODE)) {
             if ($currentNode instanceof Expression) {
@@ -31,12 +30,11 @@ final class FlowOfControlLocator
                 // to high
                 break;
             }
+            $nestingHash = spl_object_hash($functionLike) . '__';
 
             $nestingHash .= $this->resolveBinaryOpNestingHash($currentNode, $previous);
 
             $nestingHash .= spl_object_hash($currentNode);
-
-            $previous = $currentNode;
         }
 
         return $nestingHash;

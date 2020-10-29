@@ -61,14 +61,13 @@ final class ConfigurationNodeFactory
     public function createProperties(array $ruleConfiguration): array
     {
         $this->lowerPhpVersion();
-
-        $properties = [];
         foreach (array_keys($ruleConfiguration) as $constantName) {
             $propertyName = StaticRectorStrings::uppercaseUnderscoreToCamelCase($constantName);
             $type = new ArrayType(new MixedType(), new MixedType());
 
             $property = $this->nodeFactory->createPrivatePropertyFromNameAndType($propertyName, $type);
             $property->props[0]->default = new Array_([]);
+            $properties = [];
             $properties[] = $property;
         }
 
@@ -81,10 +80,9 @@ final class ConfigurationNodeFactory
      */
     public function createConfigurationConstants(array $ruleConfiguration): array
     {
-        $classConsts = [];
-
         foreach (array_keys($ruleConfiguration) as $constantName) {
             $constantValue = strtolower($constantName);
+            $classConsts = [];
             $classConst = $this->nodeFactory->createPublicClassConst($constantName, $constantValue);
             $classConsts[] = $classConst;
         }
@@ -106,21 +104,19 @@ final class ConfigurationNodeFactory
         $configurationParam = new Param($configurationVariable);
         $configurationParam->type = new Identifier('array');
         $classMethod->params[] = $configurationParam;
-
-        $assigns = [];
         foreach (array_keys($ruleConfiguration) as $constantName) {
             $coalesce = $this->createConstantInConfigurationCoalesce($constantName, $configurationVariable);
 
             $propertyName = StaticRectorStrings::uppercaseUnderscoreToCamelCase($constantName);
+            $assigns = [];
             $assign = $this->nodeFactory->createPropertyAssignmentWithExpr($propertyName, $coalesce);
             $assigns[] = new Expression($assign);
         }
 
         $classMethod->stmts = $assigns;
 
-        $phpDocInfo = $this->phpDocInfoFactory->createEmpty($classMethod);
-
         $identifierTypeNode = new IdentifierTypeNode('mixed[]');
+        $phpDocInfo = $this->phpDocInfoFactory->createEmpty($classMethod);
         $paramTagValueNode = new ParamTagValueNode($identifierTypeNode, false, '$configuration', '');
         $phpDocInfo->addTagValueNode($paramTagValueNode);
 

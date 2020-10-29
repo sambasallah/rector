@@ -35,11 +35,9 @@ final class UniqueConstraintPhpDocNodeFactory
         if ($uniqueConstraints === null) {
             return [];
         }
-
-        $uniqueConstraintContents = Strings::matchAll($annotationContent, self::UNIQUE_CONSTRAINT_REGEX);
-
-        $uniqueConstraintTagValueNodes = [];
         foreach ($uniqueConstraints as $key => $uniqueConstraint) {
+            $uniqueConstraintContents = Strings::matchAll($annotationContent, self::UNIQUE_CONSTRAINT_REGEX);
+            $uniqueConstraintTagValueNodes = [];
             $subAnnotationContent = $uniqueConstraintContents[$key];
 
             $items = $this->annotationItemsResolver->resolve($uniqueConstraint);

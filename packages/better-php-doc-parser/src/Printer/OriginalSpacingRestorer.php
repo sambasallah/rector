@@ -41,27 +41,24 @@ final class OriginalSpacingRestorer
             return $nodeOutput;
         }
 
-        $newNodeOutput = '';
-
         // replace system whitespace by old ones, include \n*
         $nodeOutputParts = Strings::split($nodeOutput, self::WHITESPACE_SPLIT_REGEX);
-
-        $oldWhitespaceCount = count($oldWhitespaces);
         $nodeOutputPartCount = count($nodeOutputParts);
 
         // new nodes were probably added, skip them
         if ($nodeOutputPartCount === 1) {
             return $nodeOutput;
         }
+        $oldWhitespaceCount = count($oldWhitespaces);
 
         if ($oldWhitespaceCount < $nodeOutputPartCount - 1) {
             return $nodeOutput;
         }
 
-        $asteriskSpaceFirst = Strings::contains($oldWhitespaces[0], '*');
-
         foreach ($nodeOutputParts as $key => $nodeOutputPart) {
+            $asteriskSpaceFirst = Strings::contains($oldWhitespaces[0], '*');
             if ($asteriskSpaceFirst) {
+                $newNodeOutput = '';
                 $newNodeOutput .= $nodeOutputPart;
                 $newNodeOutput .= $oldWhitespaces[$key] ?? ' ';
             } else {

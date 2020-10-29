@@ -84,9 +84,8 @@ final class TemplateVariablesFactory
             '__Resources__' => $this->createSourceDocBlock($rectorRecipe->getResources()),
         ];
 
-        $rectorClass = $this->templateFactory->create(ConfigFilesystem::RECTOR_FQN_NAME_PATTERN, $data);
-
         if ($rectorRecipe->getConfiguration() !== []) {
+            $rectorClass = $this->templateFactory->create(ConfigFilesystem::RECTOR_FQN_NAME_PATTERN, $data);
             $data['__TestRuleConfiguration__'] = $this->createRuleConfiguration(
                 $rectorClass,
                 $rectorRecipe->getConfiguration()
@@ -142,9 +141,8 @@ final class TemplateVariablesFactory
         if ($source === []) {
             return '';
         }
-
-        $sourceAsString = '';
         foreach ($source as $singleSource) {
+            $sourceAsString = '';
             $sourceAsString .= ' * @see ' . $singleSource . PHP_EOL;
         }
 
@@ -158,20 +156,20 @@ final class TemplateVariablesFactory
      */
     private function createRuleConfiguration(string $rectorClass, array $configuration): string
     {
-        $arrayItems = [];
         foreach ($configuration as $constantName => $variableConfiguration) {
             if ($rectorClass === self::SELF) {
-                $class = new Name(self::SELF);
             } else {
+                $class = new Name(self::SELF);
                 $class = new FullyQualified($rectorClass);
             }
-            $classConstFetch = new ClassConstFetch($class, $constantName);
 
             if (is_array($variableConfiguration)) {
                 $variableConfiguration = $this->nodeFactory->createArray($variableConfiguration);
             } else {
                 $variableConfiguration = BuilderHelpers::normalizeValue($variableConfiguration);
             }
+            $arrayItems = [];
+            $classConstFetch = new ClassConstFetch($class, $constantName);
 
             $arrayItems[] = new ArrayItem($variableConfiguration, $classConstFetch);
         }
@@ -209,8 +207,8 @@ final class TemplateVariablesFactory
 
     private function createNodeTypePhp(RectorRecipe $rectorRecipe): string
     {
-        $referencingClassConsts = [];
         foreach ($rectorRecipe->getNodeTypes() as $nodeType) {
+            $referencingClassConsts = [];
             $referencingClassConsts[] = $this->nodeFactory->createClassConstReference($nodeType);
         }
 

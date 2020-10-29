@@ -123,8 +123,8 @@ final class ErrorAndDiffCollector
      */
     public function getAffectedFileInfos(): array
     {
-        $fileInfos = [];
         foreach ($this->fileDiffs as $fileDiff) {
+            $fileInfos = [];
             $fileInfos[] = $fileDiff->getFileInfo();
         }
 

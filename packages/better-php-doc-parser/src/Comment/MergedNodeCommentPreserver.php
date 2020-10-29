@@ -11,9 +11,8 @@ final class MergedNodeCommentPreserver
 {
     public function keepComments(Node $newNode, Node ...$mergedNodes): void
     {
-        $comments = [];
-
         foreach ($mergedNodes as $mergedNode) {
+            $comments = [];
             $comments = array_merge($comments, $mergedNode->getComments());
         }
 

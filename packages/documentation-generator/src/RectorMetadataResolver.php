@@ -10,12 +10,11 @@ final class RectorMetadataResolver
 {
     public function resolvePackageFromRectorClass(string $rectorClass): string
     {
-        $rectorClassParts = explode('\\', $rectorClass);
-
         // basic Rectors
         if (Strings::startsWith($rectorClass, 'Rector\Rector\\')) {
             return 'Core';
         }
+        $rectorClassParts = explode('\\', $rectorClass);
 
         // Rector/<PackageGroup>/Rector/SomeRector
         return $rectorClassParts[1];

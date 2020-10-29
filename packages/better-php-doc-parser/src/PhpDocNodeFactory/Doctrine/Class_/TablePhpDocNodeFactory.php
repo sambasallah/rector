@@ -66,6 +66,10 @@ final class TablePhpDocNodeFactory extends AbstractPhpDocNodeFactory implements 
         $annotationContent = $this->resolveContentFromTokenIterator($tokenIterator);
 
         $indexesContent = $this->annotationContentResolver->resolveNestedKey($annotationContent, 'indexes');
+        $uniqueConstraintsContent = $this->annotationContentResolver->resolveNestedKey(
+            $annotationContent,
+            'uniqueConstraints'
+        );
         $indexTagValueNodes = $this->indexPhpDocNodeFactory->createIndexTagValueNodes(
             $table->indexes,
             $indexesContent
@@ -74,10 +78,6 @@ final class TablePhpDocNodeFactory extends AbstractPhpDocNodeFactory implements 
         $indexesOpeningAndClosingSpace = $this->matchCurlyBracketOpeningAndClosingSpace($indexesContent);
 
         $haveIndexesFinalComma = (bool) Strings::match($indexesContent, self::SPACE_BEFORE_CLOSING_BRACKET_REGEX);
-        $uniqueConstraintsContent = $this->annotationContentResolver->resolveNestedKey(
-            $annotationContent,
-            'uniqueConstraints'
-        );
 
         $uniqueConstraintOpeningAndClosingSpace = $this->matchCurlyBracketOpeningAndClosingSpace(
             $uniqueConstraintsContent

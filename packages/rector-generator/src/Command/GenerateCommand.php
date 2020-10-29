@@ -96,10 +96,9 @@ final class GenerateCommand extends Command
     {
         $rectorRecipe = $this->rectorRecipeProvider->provide();
 
-        $templateVariables = $this->templateVariablesFactory->createFromRectorRecipe($rectorRecipe);
-
         // setup psr-4 autoload, if not already in
         $this->composerPackageAutoloadUpdater->processComposerAutoload($rectorRecipe);
+        $templateVariables = $this->templateVariablesFactory->createFromRectorRecipe($rectorRecipe);
 
         $templateFileInfos = $this->templateFinder->find($rectorRecipe);
 
@@ -124,9 +123,8 @@ final class GenerateCommand extends Command
             $targetDirectory
         );
 
-        $testCaseDirectoryPath = $this->resolveTestCaseDirectoryPath($generatedFilePaths);
-
         $this->configFilesystem->appendRectorServiceToSet($rectorRecipe, $templateVariables);
+        $testCaseDirectoryPath = $this->resolveTestCaseDirectoryPath($generatedFilePaths);
 
         $this->printSuccess($rectorRecipe->getName(), $generatedFilePaths, $testCaseDirectoryPath);
 

@@ -50,21 +50,20 @@ final class JsonOutputFormatter implements OutputFormatterInterface
 
     public function report(ErrorAndDiffCollector $errorAndDiffCollector): void
     {
-        $errorsArray = [
-            'meta' => [
-                'version' => $this->configuration->getPrettyVersion(),
-                'config' => $this->configuration->getConfigFilePath(),
-            ],
-            'totals' => [
-                'changed_files' => $errorAndDiffCollector->getFileDiffsCount(),
-                'removed_and_added_files_count' => $errorAndDiffCollector->getRemovedAndAddedFilesCount(),
-                'removed_node_count' => $errorAndDiffCollector->getRemovedNodeCount(),
-            ],
-        ];
-
         $fileDiffs = $errorAndDiffCollector->getFileDiffs();
         ksort($fileDiffs);
         foreach ($fileDiffs as $fileDiff) {
+            $errorsArray = [
+                'meta' => [
+                    'version' => $this->configuration->getPrettyVersion(),
+                    'config' => $this->configuration->getConfigFilePath(),
+                ],
+                'totals' => [
+                    'changed_files' => $errorAndDiffCollector->getFileDiffsCount(),
+                    'removed_and_added_files_count' => $errorAndDiffCollector->getRemovedAndAddedFilesCount(),
+                    'removed_node_count' => $errorAndDiffCollector->getRemovedNodeCount(),
+                ],
+            ];
             $relativeFilePath = $fileDiff->getRelativeFilePath();
 
             $errorsArray['file_diffs'][] = [
@@ -81,13 +80,12 @@ final class JsonOutputFormatter implements OutputFormatterInterface
         $errorsArray['totals']['errors'] = count($errors);
 
         foreach ($errors as $error) {
-            $errorData = [
-                'message' => $error->getMessage(),
-                'file' => $error->getFileInfo()
-                    ->getPathname(),
-            ];
-
             if ($error->getRectorClass()) {
+                $errorData = [
+                    'message' => $error->getMessage(),
+                    'file' => $error->getFileInfo()
+                        ->getPathname(),
+                ];
                 $errorData['caused_by'] = $error->getRectorClass();
             }
 
@@ -98,10 +96,9 @@ final class JsonOutputFormatter implements OutputFormatterInterface
             $errorsArray['errors'][] = $errorData;
         }
 
-        $json = Json::encode($errorsArray, Json::PRETTY);
-
         $outputFile = $this->configuration->getOutputFile();
         if ($outputFile !== null) {
+            $json = Json::encode($errorsArray, Json::PRETTY);
             $this->smartFileSystem->dumpFile($outputFile, $json . PHP_EOL);
         } else {
             $this->symfonyStyle->writeln($json);

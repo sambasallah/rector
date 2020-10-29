@@ -71,9 +71,9 @@ final class VarAnnotationManipulator
     {
         $currentStmt = $node->getAttribute(AttributeKey::CURRENT_STATEMENT);
         if ($currentStmt instanceof Expression) {
+        } else {
             /** @var PhpDocInfo|null $phpDocInfo */
             $phpDocInfo = $currentStmt->getAttribute(AttributeKey::PHP_DOC_INFO);
-        } else {
             /** @var PhpDocInfo|null $phpDocInfo */
             $phpDocInfo = $node->getAttribute(AttributeKey::PHP_DOC_INFO);
         }

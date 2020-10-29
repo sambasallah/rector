@@ -48,8 +48,8 @@ final class IntersectionTypeMapper implements PhpDocTypeMapperInterface
      */
     public function mapToPHPStanType(TypeNode $typeNode, Node $node, NameScope $nameScope): Type
     {
-        $unionedTypes = [];
         foreach ($typeNode->types as $unionedTypeNode) {
+            $unionedTypes = [];
             $unionedTypes[] = $this->phpDocTypeMapper->mapToPHPStanType($unionedTypeNode, $node, $nameScope);
         }
 

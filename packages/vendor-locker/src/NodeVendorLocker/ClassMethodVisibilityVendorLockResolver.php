@@ -95,9 +95,8 @@ final class ClassMethodVisibilityVendorLockResolver extends AbstractNodeVendorLo
     private function getInterfaceMethodNames(string $className): array
     {
         $interfaces = class_implements($className);
-
-        $interfaceMethods = [];
         foreach ($interfaces as $interface) {
+            $interfaceMethods = [];
             $interfaceMethods = array_merge($interfaceMethods, get_class_methods($interface));
         }
 

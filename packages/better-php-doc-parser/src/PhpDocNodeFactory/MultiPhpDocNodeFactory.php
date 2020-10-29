@@ -100,12 +100,12 @@ final class MultiPhpDocNodeFactory extends AbstractPhpDocNodeFactory implements 
         string $annotationClass
     ): ?PhpDocTagValueNode {
         $tagValueNodeClassesToAnnotationClasses = $this->getTagValueNodeClassesToAnnotationClasses();
-        $tagValueNodeClass = array_search($annotationClass, $tagValueNodeClassesToAnnotationClasses, true);
 
         $annotation = $this->nodeAnnotationReader->readAnnotation($node, $annotationClass);
         if ($annotation === null) {
             return null;
         }
+        $tagValueNodeClass = array_search($annotationClass, $tagValueNodeClassesToAnnotationClasses, true);
 
         $items = $this->annotationItemsResolver->resolve($annotation);
         $content = $this->annotationContentResolver->resolveFromTokenIterator($tokenIterator);

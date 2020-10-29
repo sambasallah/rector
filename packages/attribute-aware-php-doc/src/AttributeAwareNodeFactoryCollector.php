@@ -34,8 +34,8 @@ final class AttributeAwareNodeFactoryCollector
      */
     public function getSupportedNodeClasses(): array
     {
-        $supportedNodeClasses = [];
         foreach ($this->attributeAwareNodeFactories as $attributeAwareNodeFactory) {
+            $supportedNodeClasses = [];
             $supportedNodeClasses[] = $attributeAwareNodeFactory->getOriginalNodeClass();
         }
 

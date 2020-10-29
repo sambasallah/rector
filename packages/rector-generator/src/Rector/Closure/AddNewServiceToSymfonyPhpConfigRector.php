@@ -94,8 +94,8 @@ CODE_SAMPLE
 
     private function createServicesSetMethodCall(string $className): MethodCall
     {
-        $servicesVariable = new Variable('services');
         $referenceClassConstFetch = new ClassConstFetch(new FullyQualified($className), new Identifier('class'));
+        $servicesVariable = new Variable('services');
         $args = [new Arg($referenceClassConstFetch)];
 
         return new MethodCall($servicesVariable, 'set', $args);

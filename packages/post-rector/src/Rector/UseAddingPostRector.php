@@ -143,12 +143,11 @@ final class UseAddingPostRector extends AbstractPostRector
      */
     private function filterOutNonNamespacedNames(array $useImportTypes): array
     {
-        $namespacedUseImportTypes = [];
-
         foreach ($useImportTypes as $useImportType) {
             if (! Strings::contains($useImportType->getClassName(), '\\')) {
                 continue;
             }
+            $namespacedUseImportTypes = [];
 
             $namespacedUseImportTypes[] = $useImportType;
         }

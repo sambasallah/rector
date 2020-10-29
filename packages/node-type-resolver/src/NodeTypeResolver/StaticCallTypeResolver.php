@@ -52,12 +52,11 @@ final class StaticCallTypeResolver implements NodeTypeResolverInterface
      */
     public function resolve(Node $node): Type
     {
-        $classType = $this->nodeTypeResolver->resolve($node->class);
         $methodName = $this->nodeNameResolver->getName($node->name);
 
         // no specific method found, return class types, e.g. <ClassType>::$method()
         if (! is_string($methodName)) {
-            return $classType;
+            return $this->nodeTypeResolver->resolve($node->class);
         }
 
         $classNames = TypeUtils::getDirectClassNames($classType);

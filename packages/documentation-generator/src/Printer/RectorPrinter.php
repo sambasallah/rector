@@ -50,18 +50,16 @@ final class RectorPrinter
 
     public function printRector(RectorInterface $rector, bool $isRectorProject): string
     {
-        $content = '';
-        $headline = $this->getRectorClassWithoutNamespace($rector);
-
         if ($isRectorProject) {
+            $content = '';
+            $headline = $this->getRectorClassWithoutNamespace($rector);
             $content .= sprintf('### `%s`', $headline) . PHP_EOL;
         } else {
             $content .= sprintf('## `%s`', $headline) . PHP_EOL;
         }
 
-        $rectorClass = get_class($rector);
-
         $content .= PHP_EOL;
+        $rectorClass = get_class($rector);
         $content .= $this->createRectorFileLink($rector, $rectorClass) . PHP_EOL;
 
         $rectorTestClass = $this->testClassResolver->resolveFromClassName($rectorClass);

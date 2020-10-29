@@ -70,7 +70,6 @@ final class TypeFactory
      */
     public function uniquateTypes(array $types, bool $keepConstant = false): array
     {
-        $uniqueTypes = [];
         foreach ($types as $type) {
             if (! $keepConstant) {
                 $type = $this->removeValueFromConstantType($type);
@@ -79,6 +78,7 @@ final class TypeFactory
             if ($type instanceof ShortenedObjectType) {
                 $type = new FullyQualifiedObjectType($type->getFullyQualifiedName());
             }
+            $uniqueTypes = [];
 
             $typeHash = md5($type->describe(VerbosityLevel::cache()));
             $uniqueTypes[$typeHash] = $type;
@@ -94,10 +94,10 @@ final class TypeFactory
      */
     private function unwrapUnionedTypes(array $types): array
     {
-        // unwrap union types
-        $unwrappedTypes = [];
         foreach ($types as $key => $type) {
             if ($type instanceof UnionType) {
+                // unwrap union types
+                $unwrappedTypes = [];
                 $unwrappedTypes = array_merge($unwrappedTypes, $type->getTypes());
 
                 unset($types[$key]);

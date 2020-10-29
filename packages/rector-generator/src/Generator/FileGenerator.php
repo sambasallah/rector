@@ -54,9 +54,8 @@ final class FileGenerator
         RectorRecipe $rectorRecipe,
         string $destinationDirectory
     ): array {
-        $generatedFilePaths = [];
-
         foreach ($templateFileInfos as $fileInfo) {
+            $generatedFilePaths = [];
             $generatedFilePaths[] = $this->generateFileInfoWithTemplateVariables(
                 $fileInfo,
                 $templateVariables,
@@ -77,19 +76,17 @@ final class FileGenerator
         RectorRecipe $rectorRecipe,
         string $targetDirectory
     ): string {
+        // replace "Rector\Utils\" with "Utils\Rector\" for 3rd party packages
+        if (! $rectorRecipe->isRectorRepository()) {
+            $content = $this->templateFactory->create($smartFileInfo->getContents(), $templateVariables);
+            $content = Strings::replace($content, self::RECTOR_UTILS_REGEX, 'Utils\Rector');
+        }
         $targetFilePath = $this->templateFileSystem->resolveDestination(
             $smartFileInfo,
             $templateVariables,
             $rectorRecipe,
             $targetDirectory
         );
-
-        $content = $this->templateFactory->create($smartFileInfo->getContents(), $templateVariables);
-
-        // replace "Rector\Utils\" with "Utils\Rector\" for 3rd party packages
-        if (! $rectorRecipe->isRectorRepository()) {
-            $content = Strings::replace($content, self::RECTOR_UTILS_REGEX, 'Utils\Rector');
-        }
 
         $this->smartFileSystem->dumpFile($targetFilePath, $content);
 

@@ -18,10 +18,9 @@ final class NameScopeFactory
 {
     public function createNameScopeFromNode(Node $node): NameScope
     {
-        $namespace = $node->getAttribute(AttributeKey::NAMESPACE_NAME);
-
         /** @var Use_[] $useNodes */
         $useNodes = (array) $node->getAttribute(AttributeKey::USE_NODES);
+        $namespace = $node->getAttribute(AttributeKey::NAMESPACE_NAME);
 
         $uses = $this->resolveUseNamesByAlias($useNodes);
         $className = $node->getAttribute(AttributeKey::CLASS_NAME);
@@ -35,18 +34,16 @@ final class NameScopeFactory
      */
     private function resolveUseNamesByAlias(array $useNodes): array
     {
-        $useNamesByAlias = [];
-
         foreach ($useNodes as $useNode) {
             foreach ($useNode->uses as $useUse) {
-                /** @var UseUse $useUse */
-                $aliasName = $useUse->getAlias()
-                    ->name;
-
                 $useName = $useUse->name->toString();
                 if (! is_string($useName)) {
                     throw new ShouldNotHappenException();
                 }
+                /** @var UseUse $useUse */
+                $aliasName = $useUse->getAlias()
+                    ->name;
+                $useNamesByAlias = [];
 
                 // uses must be lowercase, as PHPStan lowercases it
                 $lowercasedAliasName = strtolower($aliasName);

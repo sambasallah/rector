@@ -18,14 +18,13 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ServicesConfigurat
 function inline_single_object(object $object, ServicesConfigurator $servicesConfigurator): ReferenceConfigurator
 {
     $reflectionClass = new ReflectionClass($object);
+    // create fake factory with private accessor, as properties are different
+    // @see https://symfony.com/doc/current/service_container/factories.html#passing-arguments-to-the-factory-method
+    $servicesConfigurator->set(ArgumentAndParameterFactory::class);
 
     $className = $reflectionClass->getName();
     $propertyValues = resolve_property_values($reflectionClass, $object);
     $argumentValues = resolve_argument_values($reflectionClass, $object);
-
-    // create fake factory with private accessor, as properties are different
-    // @see https://symfony.com/doc/current/service_container/factories.html#passing-arguments-to-the-factory-method
-    $servicesConfigurator->set(ArgumentAndParameterFactory::class);
 
     $servicesConfigurator->set($className)
         ->factory([ref(ArgumentAndParameterFactory::class), 'create'])
@@ -38,11 +37,10 @@ function inline_value_object(object $object): InlineServiceConfigurator
 {
     $reflectionClass = new ReflectionClass($object);
 
-    $className = $reflectionClass->getName();
-    $argumentValues = resolve_argument_values($reflectionClass, $object);
-
     // Symfony 5.1+
     if (function_exists('Symfony\Component\DependencyInjection\Loader\Configurator\inline_service')) {
+        $className = $reflectionClass->getName();
+        $argumentValues = resolve_argument_values($reflectionClass, $object);
         return inline_service($className)
             ->args($argumentValues);
     }
@@ -58,8 +56,8 @@ function inline_value_object(object $object): InlineServiceConfigurator
  */
 function inline_value_objects(array $objects): array
 {
-    $inlineServices = [];
     foreach ($objects as $object) {
+        $inlineServices = [];
         $inlineServices[] = inline_value_object($object);
     }
 
@@ -71,8 +69,6 @@ function inline_value_objects(array $objects): array
  */
 function resolve_argument_values(ReflectionClass $reflectionClass, object $object): array
 {
-    $argumentValues = [];
-
     $constructorMethodReflection = $reflectionClass->getConstructor();
     if ($constructorMethodReflection === null) {
         $message = sprintf(
@@ -86,6 +82,7 @@ function resolve_argument_values(ReflectionClass $reflectionClass, object $objec
         $parameterName = $reflectionParameter->getName();
         $propertyReflection = $reflectionClass->getProperty($parameterName);
         $propertyReflection->setAccessible(true);
+        $argumentValues = [];
 
         $argumentValues[] = $propertyReflection->getValue($object);
     }
@@ -98,11 +95,10 @@ function resolve_argument_values(ReflectionClass $reflectionClass, object $objec
  */
 function resolve_property_values(ReflectionClass $reflectionClass, object $object): array
 {
-    $propertyValues = [];
-
     foreach ($reflectionClass->getProperties() as $reflectionProperty) {
-        $parameterName = $reflectionProperty->getName();
         $reflectionProperty->setAccessible(true);
+        $propertyValues = [];
+        $parameterName = $reflectionProperty->getName();
 
         $propertyValues[$parameterName] = $reflectionProperty->getValue($object);
     }

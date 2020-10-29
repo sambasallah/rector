@@ -37,9 +37,8 @@ final class CodeSamplePrinter
 
     public function printCodeSamples(RectorDefinition $rectorDefinition, RectorInterface $rector): string
     {
-        $content = '';
-
         foreach ($rectorDefinition->getCodeSamples() as $codeSample) {
+            $content = '';
             $content .= $this->printConfiguration($rector, $codeSample);
             $content .= $this->printCodeSample($codeSample);
         }
@@ -70,10 +69,9 @@ final class CodeSamplePrinter
             $codeSample->getCodeAfter()
         );
 
-        $content = $this->printCodeWrapped($diff, 'diff');
-
         $extraFileContent = $codeSample->getExtraFileContent();
         if ($extraFileContent !== null) {
+            $content = $this->printCodeWrapped($diff, 'diff');
             $content .= PHP_EOL . '**New file**' . PHP_EOL;
             $content .= $this->printCodeWrapped($extraFileContent, 'php');
         }

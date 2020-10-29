@@ -70,9 +70,8 @@ final class NodeAnnotationReader
 
     public function readClassAnnotation(Class_ $class, string $annotationClassName): ?object
     {
-        $classReflection = $this->createClassReflectionFromNode($class);
-
         try {
+            $classReflection = $this->createClassReflectionFromNode($class);
             // covers cases like https://github.com/rectorphp/rector/issues/3046
 
             /** @var object[] $classAnnotations */
@@ -111,9 +110,8 @@ final class NodeAnnotationReader
         /** @var string $methodName */
         $methodName = $this->nodeNameResolver->getName($classMethod);
 
-        $reflectionMethod = new ReflectionMethod($className, $methodName);
-
         try {
+            $reflectionMethod = new ReflectionMethod($className, $methodName);
             // covers cases like https://github.com/rectorphp/rector/issues/3046
 
             /** @var object[] $methodAnnotations */
@@ -177,9 +175,6 @@ final class NodeAnnotationReader
 
     private function createPropertyReflectionFromPropertyNode(Property $property): ?ReflectionProperty
     {
-        /** @var string $propertyName */
-        $propertyName = $this->nodeNameResolver->getName($property);
-
         /** @var string|null $className */
         $className = $property->getAttribute(AttributeKey::CLASS_NAME);
 
@@ -189,6 +184,8 @@ final class NodeAnnotationReader
         }
 
         try {
+            /** @var string $propertyName */
+            $propertyName = $this->nodeNameResolver->getName($property);
             return new ReflectionProperty($className, $propertyName);
         } catch (Throwable $throwable) {
             // in case of PHPUnit property or just-added property

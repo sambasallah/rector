@@ -39,11 +39,9 @@ final class AnnotationContentResolver
      */
     public function resolveFromTokenIterator(TokenIterator $tokenIterator): string
     {
-        $annotationContent = '';
-        $unclosedOpenedBracketCount = 0;
-
         while (true) {
             if ($tokenIterator->currentTokenType() === Lexer::TOKEN_OPEN_PARENTHESES) {
+                $unclosedOpenedBracketCount = 0;
                 ++$unclosedOpenedBracketCount;
             }
 
@@ -54,6 +52,7 @@ final class AnnotationContentResolver
             if ($unclosedOpenedBracketCount === 0 && $tokenIterator->currentTokenType() === Lexer::TOKEN_PHPDOC_EOL) {
                 break;
             }
+            $annotationContent = '';
 
             // remove new line "*"
             $annotationContent = $this->appendPreviousWhitespace($tokenIterator, $annotationContent);
@@ -78,28 +77,26 @@ final class AnnotationContentResolver
 
     public function resolveNestedKey(string $annotationContent, string $name): string
     {
-        $start = false;
-        $openedCurlyBracketCount = 0;
-        $tokenContents = [];
-
-        $tokenIterator = $this->tokenIteratorFactory->create($annotationContent);
-
         while (true) {
+            $tokenIterator = $this->tokenIteratorFactory->create($annotationContent);
             // the end
             if (in_array($tokenIterator->currentTokenType(), [Lexer::TOKEN_CLOSE_PHPDOC, Lexer::TOKEN_END], true)) {
                 break;
             }
+            $start = false;
 
             $start = $this->tryStartWithKey($name, $start, $tokenIterator);
             if (! $start) {
                 $tokenIterator->next();
                 continue;
             }
+            $tokenContents = [];
 
             $tokenContents[] = $tokenIterator->currentTokenValue();
 
             // opening bracket {
             if ($tokenIterator->isCurrentTokenType(Lexer::TOKEN_OPEN_CURLY_BRACKET)) {
+                $openedCurlyBracketCount = 0;
                 ++$openedCurlyBracketCount;
             }
 
@@ -133,12 +130,11 @@ final class AnnotationContentResolver
             return $annotationContent;
         }
 
-        $previousWhitespaceToken = $tokens[$currentIndex - 1];
-
         // do not prepend whitespace without any content
         if ($annotationContent === '') {
             return $annotationContent;
         }
+        $previousWhitespaceToken = $tokens[$currentIndex - 1];
 
         // get the space
         return $annotationContent . $previousWhitespaceToken[0];

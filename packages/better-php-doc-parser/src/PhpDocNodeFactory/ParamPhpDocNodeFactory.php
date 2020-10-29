@@ -62,10 +62,8 @@ final class ParamPhpDocNodeFactory
     {
         try {
             $tokenIterator->pushSavePoint();
-            $attributeAwareParamTagValueNode = $this->parseParamTagValue($tokenIterator);
             $tokenIterator->dropSavePoint();
-
-            return $attributeAwareParamTagValueNode;
+            return $this->parseParamTagValue($tokenIterator);
         } catch (ParserException $parserException) {
             $tokenIterator->rollback();
             $description = $this->privatesCaller->callPrivateMethod(
@@ -89,11 +87,12 @@ final class ParamPhpDocNodeFactory
     private function parseParamTagValue(TokenIterator $tokenIterator): AttributeAwareParamTagValueNode
     {
         $originalTokenIterator = clone $tokenIterator;
-        $annotationContent = $this->annotationContentResolver->resolveFromTokenIterator($originalTokenIterator);
 
         $typeParser = $this->privatesAccessor->getPrivateProperty($this->phpDocParser, 'typeParser');
+        $annotationContent = $this->annotationContentResolver->resolveFromTokenIterator($originalTokenIterator);
 
         $type = $typeParser->parse($tokenIterator);
+        $type = $this->attributeAwareNodeFactory->createFromNode($type, $annotationContent);
 
         $isVariadic = $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_VARIADIC);
 
@@ -110,8 +109,6 @@ final class ParamPhpDocNodeFactory
             'parseOptionalDescription',
             $tokenIterator
         );
-
-        $type = $this->attributeAwareNodeFactory->createFromNode($type, $annotationContent);
 
         return new AttributeAwareParamTagValueNode($type, $isVariadic, $parameterName, $description, $isReference);
     }

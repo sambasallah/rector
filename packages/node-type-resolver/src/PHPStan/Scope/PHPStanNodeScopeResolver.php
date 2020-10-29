@@ -118,10 +118,13 @@ final class PHPStanNodeScopeResolver
     {
         $this->removeDeepChainMethodCallNodes($nodes);
 
-        $scope = $this->scopeFactory->createFromFile($smartFileInfo);
-
         $this->dependentFiles = [];
 
+        $scope = $this->scopeFactory->createFromFile($smartFileInfo);
+
+        foreach ($nodes as $node) {
+            $this->resolveDependentFiles($node, $scope);
+        }
         // skip chain method calls, performance issue: https://github.com/phpstan/phpstan/issues/254
         $nodeCallback = function (Node $node, Scope $scope): void {
             // the class reflection is resolved AFTER entering to class node
@@ -149,10 +152,6 @@ final class PHPStanNodeScopeResolver
                 $node->setAttribute(AttributeKey::SCOPE, $scope);
             }
         };
-
-        foreach ($nodes as $node) {
-            $this->resolveDependentFiles($node, $scope);
-        }
 
         /** @var MutatingScope $scope */
         $this->nodeScopeResolver->processNodes($nodes, $scope, $nodeCallback);

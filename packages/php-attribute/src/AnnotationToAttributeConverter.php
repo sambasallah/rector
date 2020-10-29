@@ -42,14 +42,13 @@ final class AnnotationToAttributeConverter
         if ($phpDocInfo === null) {
             return null;
         }
-
-        // special cases without tag value node
-        $hasNewAttrGroups = false;
         if ($phpDocInfo->hasByName('required')) {
             $phpDocInfo->removeByName('required');
             $node->attrGroups[] = new AttributeGroup([
                 new Attribute(new FullyQualified('Symfony\Contracts\Service\Attribute\Required')),
             ]);
+            // special cases without tag value node
+            $hasNewAttrGroups = false;
             $hasNewAttrGroups = true;
         }
 

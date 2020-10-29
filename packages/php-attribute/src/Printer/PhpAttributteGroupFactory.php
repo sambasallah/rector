@@ -28,8 +28,8 @@ final class PhpAttributteGroupFactory
      */
     public function create(array $phpAttributableTagNodes): array
     {
-        $attributeGroups = [];
         foreach ($phpAttributableTagNodes as $phpAttributableTagNode) {
+            $attributeGroups = [];
             $currentAttributeGroups = $this->printPhpAttributableTagNode($phpAttributableTagNode);
             $attributeGroups = array_merge($attributeGroups, $currentAttributeGroups);
         }
@@ -42,12 +42,11 @@ final class PhpAttributteGroupFactory
      */
     public function printItemsToAttributeArgs(PhpAttributableTagNodeInterface $phpAttributableTagNode): array
     {
-        $items = $phpAttributableTagNode->getAttributableItems();
-
-        $silentKey = null;
         if ($phpAttributableTagNode instanceof SilentKeyNodeInterface) {
+            $silentKey = null;
             $silentKey = $phpAttributableTagNode->getSilentKey();
         }
+        $items = $phpAttributableTagNode->getAttributableItems();
 
         return $this->createArgsFromItems($items, $silentKey);
     }
@@ -81,9 +80,8 @@ final class PhpAttributteGroupFactory
      */
     private function createArgsFromItems(array $items, ?string $silentKey = null): array
     {
-        $args = [];
-
         if ($silentKey !== null && isset($items[$silentKey])) {
+            $args = [];
             $silentValue = BuilderHelpers::normalizeValue($items[$silentKey]);
             $args[] = new Arg($silentValue);
             unset($items[$silentKey]);
@@ -91,8 +89,8 @@ final class PhpAttributteGroupFactory
 
         if ($this->isArrayArguments($items)) {
             foreach ($items as $key => $value) {
-                $argumentName = new Identifier($key);
                 $value = BuilderHelpers::normalizeValue($value);
+                $argumentName = new Identifier($key);
                 $args[] = new Arg($value, false, false, [], $argumentName);
             }
         } else {

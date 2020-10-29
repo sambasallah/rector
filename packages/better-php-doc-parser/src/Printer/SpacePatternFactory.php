@@ -17,10 +17,9 @@ final class SpacePatternFactory
 
     public function createSpacePattern(PhpDocTagNode $phpDocTagNode): string
     {
-        $spacePattern = preg_quote($phpDocTagNode->name, '#') . '(?<space>\s+)';
-
         // we have to match exact @param space, in case of multiple @param s
         if ($phpDocTagNode->value instanceof AttributeAwareParamTagValueNode) {
+            $spacePattern = preg_quote($phpDocTagNode->name, '#') . '(?<space>\s+)';
             return $this->createSpacePatternForParamTagValueNode($phpDocTagNode->value, $spacePattern);
         }
 

@@ -160,12 +160,12 @@ final class NodeNameResolver
      */
     public function getNames(array $nodes): array
     {
-        $names = [];
         foreach ($nodes as $node) {
             $name = $this->getName($node);
             if (! is_string($name)) {
                 throw new ShouldNotHappenException();
             }
+            $names = [];
 
             $names[] = $name;
         }
@@ -216,10 +216,9 @@ final class NodeNameResolver
      */
     private function reportInvalidNodeForName(Node $node): void
     {
-        $message = sprintf('Pick more specific node than "%s", e.g. "$node->name"', get_class($node));
-
         $fileInfo = $this->currentFileInfoProvider->getSmartFileInfo();
         if ($fileInfo instanceof SmartFileInfo) {
+            $message = sprintf('Pick more specific node than "%s", e.g. "$node->name"', get_class($node));
             $message .= PHP_EOL . PHP_EOL;
             $message .= sprintf(
                 'Caused in "%s" file on line %d on code "%s"',
@@ -236,8 +235,8 @@ final class NodeNameResolver
             // issues to find the file in prefixed
             if (file_exists($rectorBacktrace[self::FILE])) {
                 $fileInfo = new SmartFileInfo($rectorBacktrace[self::FILE]);
-                $fileAndLine = $fileInfo->getRelativeFilePathFromCwd() . ':' . $rectorBacktrace['line'];
             } else {
+                $fileAndLine = $fileInfo->getRelativeFilePathFromCwd() . ':' . $rectorBacktrace['line'];
                 $fileAndLine = $rectorBacktrace[self::FILE] . ':' . $rectorBacktrace['line'];
             }
 

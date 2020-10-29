@@ -24,9 +24,8 @@ final class ArgumentAndParameterFactory
      */
     public function create(string $className, array $arguments, array $properties): object
     {
-        $object = new $className(...$arguments);
-
         foreach ($properties as $name => $value) {
+            $object = new $className(...$arguments);
             $this->privatesAccessor->setPrivateProperty($object, $name, $value);
         }
 

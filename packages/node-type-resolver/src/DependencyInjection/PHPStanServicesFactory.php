@@ -38,9 +38,6 @@ final class PHPStanServicesFactory
     public function __construct()
     {
         $currentWorkingDirectory = getcwd();
-        $smartFileSystem = new SmartFileSystem();
-
-        $containerFactory = new ContainerFactory($currentWorkingDirectory);
         $additionalConfigFiles = [];
 
         // possible path collision for Docker
@@ -49,15 +46,15 @@ final class PHPStanServicesFactory
             $additionalConfigFiles
         );
 
-        $temporaryPHPStanNeon = null;
-
         $currentProjectConfigFile = $currentWorkingDirectory . '/phpstan.neon';
 
         if (file_exists($currentProjectConfigFile)) {
+            $smartFileSystem = new SmartFileSystem();
             $phpstanNeonContent = $smartFileSystem->readFile($currentProjectConfigFile);
 
             // bleeding edge clean out, see https://github.com/rectorphp/rector/issues/2431
             if (Strings::match($phpstanNeonContent, self::BLEEDING_EDGE_REGEX)) {
+                $temporaryPHPStanNeon = null;
                 // Note: We need a unique file per process if rector runs in parallel
                 $pid = getmypid();
                 $temporaryPHPStanNeon = $currentWorkingDirectory . '/rector-temp-phpstan' . $pid . '.neon';
@@ -74,6 +71,7 @@ final class PHPStanServicesFactory
 
         // enable type inferring from constructor
         $additionalConfigFiles[] = __DIR__ . '/../../config/phpstan/better-infer.neon';
+        $containerFactory = new ContainerFactory($currentWorkingDirectory);
 
         $this->container = $containerFactory->create(sys_get_temp_dir(), $additionalConfigFiles, []);
 

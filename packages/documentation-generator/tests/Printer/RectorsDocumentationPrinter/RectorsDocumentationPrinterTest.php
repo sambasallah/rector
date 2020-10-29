@@ -61,14 +61,13 @@ final class RectorsDocumentationPrinterTest extends AbstractKernelTestCase
      */
     private function createRectorsFromRectorClasses(array $rectorClasses): array
     {
-        $rectors = [];
-
         foreach ($rectorClasses as $rectorClass) {
             $reflectionClass = new ReflectionClass($rectorClass);
             $rector = $reflectionClass->newInstanceWithoutConstructor();
             if (! $rector instanceof RectorInterface) {
                 throw new ShouldNotHappenException();
             }
+            $rectors = [];
 
             $rectors[] = $rector;
         }

@@ -76,13 +76,12 @@ final class UnionTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        $unionTypesNodes = [];
-        $skipIterable = $this->shouldSkipIterable($type);
-
         foreach ($type->getTypes() as $unionedType) {
+            $skipIterable = $this->shouldSkipIterable($type);
             if ($unionedType instanceof IterableType && $skipIterable) {
                 continue;
             }
+            $unionTypesNodes = [];
 
             $unionTypesNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($unionedType);
         }
@@ -136,9 +135,8 @@ final class UnionTypeMapper implements TypeMapperInterface
      */
     public function mapToDocString(Type $type, ?Type $parentType = null): string
     {
-        $docStrings = [];
-
         foreach ($type->getTypes() as $unionedType) {
+            $docStrings = [];
             $docStrings[] = $this->phpStanStaticTypeMapper->mapToDocString($unionedType);
         }
 
@@ -168,9 +166,8 @@ final class UnionTypeMapper implements TypeMapperInterface
         if ($unionTypeAnalysis === null) {
             return null;
         }
-
-        $type = $unionTypeAnalysis->hasIterable() ? 'iterable' : 'array';
         if ($unionTypeAnalysis->isNullableType()) {
+            $type = $unionTypeAnalysis->hasIterable() ? 'iterable' : 'array';
             return new NullableType($type);
         }
 
@@ -184,10 +181,9 @@ final class UnionTypeMapper implements TypeMapperInterface
         }
 
         $firstType = $unionType->getTypes()[0];
-        $secondType = $unionType->getTypes()[1];
 
         if ($firstType instanceof NullType) {
-            return $secondType;
+            return $unionType->getTypes()[1];
         }
 
         if ($secondType instanceof NullType) {
@@ -227,14 +223,13 @@ final class UnionTypeMapper implements TypeMapperInterface
             return null;
         }
 
-        $phpParserUnionedTypes = [];
-
         foreach ($unionType->getTypes() as $unionedType) {
             /** @var Identifier|Name|null $phpParserNode */
             $phpParserNode = $this->phpStanStaticTypeMapper->mapToPhpParserNode($unionedType);
             if ($phpParserNode === null) {
                 return null;
             }
+            $phpParserUnionedTypes = [];
 
             $phpParserUnionedTypes[] = $phpParserNode;
         }

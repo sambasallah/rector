@@ -58,12 +58,11 @@ final class TypeUnwrapper
      */
     public function removeNullTypeFromUnionType(UnionType $unionType): Type
     {
-        $unionedTypesWithoutNullType = [];
-
         foreach ($unionType->getTypes() as $type) {
             if ($type instanceof UnionType) {
                 continue;
             }
+            $unionedTypesWithoutNullType = [];
 
             $unionedTypesWithoutNullType[] = $type;
         }

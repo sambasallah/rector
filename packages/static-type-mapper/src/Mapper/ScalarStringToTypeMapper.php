@@ -38,9 +38,8 @@ final class ScalarStringToTypeMapper
 
     public function mapScalarStringToType(string $scalarName): Type
     {
-        $loweredScalarName = Strings::lower($scalarName);
-
         foreach (self::SCALAR_NAME_BY_TYPE as $objectType => $scalarNames) {
+            $loweredScalarName = Strings::lower($scalarName);
             if (! in_array($loweredScalarName, $scalarNames, true)) {
                 continue;
             }

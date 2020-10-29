@@ -34,8 +34,8 @@ final class AttributeAwareArrayShapeNodeFactory implements AttributeNodeAwareFac
      */
     public function create(Node $node, string $docContent): AttributeAwareNodeInterface
     {
-        $items = [];
         foreach ($node->items as $item) {
+            $items = [];
             $items[] = $this->attributeAwareNodeFactory->createFromNode($item, $docContent);
         }
 

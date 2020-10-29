@@ -59,10 +59,9 @@ final class NameTypeResolver implements NodeTypeResolverInterface
             return new MixedType();
         }
 
-        $type = new ObjectType($parentClassName);
-
         $parentParentClass = get_parent_class($parentClassName);
         if ($parentParentClass) {
+            $type = new ObjectType($parentClassName);
             $type = new UnionType([$type, new ObjectType($parentParentClass)]);
         }
 

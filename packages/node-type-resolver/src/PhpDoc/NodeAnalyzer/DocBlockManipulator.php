@@ -155,9 +155,8 @@ final class DocBlockManipulator
     {
         // new node, needs to be reparsed
         if ($phpDocInfo->isNewNode()) {
-            $docContent = (string) $phpDocInfo->getPhpDocNode();
             if (! $phpDocInfo->isSingleLine()) {
-                return $docContent;
+                return (string) $phpDocInfo->getPhpDocNode();
             }
 
             return $this->inlineDocContent($docContent);
@@ -198,12 +197,12 @@ final class DocBlockManipulator
      */
     private function completeSimpleCommentsToPhpDoc(Node $node, string $phpDoc): string
     {
-        $startComments = '';
         foreach ($node->getComments() as $comment) {
             // skip non-simple comments
             if (! Strings::startsWith($comment->getText(), '//')) {
                 continue;
             }
+            $startComments = '';
 
             $startComments .= $comment->getText();
         }

@@ -164,12 +164,10 @@ final class PhpDocInfoPrinter
 
         $this->currentTokenPosition = 0;
 
-        $output = '';
-
-        // node output
-        $nodeCount = count($attributeAwarePhpDocNode->children);
-
         foreach ($attributeAwarePhpDocNode->children as $key => $phpDocChildNode) {
+            $output = '';
+            // node output
+            $nodeCount = count($attributeAwarePhpDocNode->children);
             $output .= $this->printNode($phpDocChildNode, null, $key + 1, $nodeCount);
         }
 
@@ -202,13 +200,12 @@ final class PhpDocInfoPrinter
         int $key = 0,
         int $nodeCount = 0
     ): string {
-        $output = '';
-
         /** @var StartAndEnd|null $startAndEnd */
         $startAndEnd = $attributeAwareNode->getAttribute(Attribute::START_END) ?: $startAndEnd;
         $attributeAwareNode = $this->multilineSpaceFormatPreserver->fixMultilineDescriptions($attributeAwareNode);
 
         if ($startAndEnd !== null) {
+            $output = '';
             $isLastToken = ($nodeCount === $key);
 
             $output = $this->addTokensFromTo(
@@ -258,9 +255,9 @@ final class PhpDocInfoPrinter
         int $to,
         bool $shouldSkipEmptyLinesAbove = false
     ): string {
-        // skip removed nodes
-        $positionJumpSet = [];
         foreach ($this->getRemovedNodesPositions() as $startAndEnd) {
+            // skip removed nodes
+            $positionJumpSet = [];
             $positionJumpSet[$startAndEnd->getStart()] = $startAndEnd->getEnd();
         }
 
@@ -296,10 +293,10 @@ final class PhpDocInfoPrinter
         }
 
         $nodeOutput = $this->printNode($phpDocTagNodeValue, $startAndEnd);
-        $tagSpaceSeparator = $this->resolveTagSpaceSeparator($phpDocTagNode);
 
         // space is handled by $tagSpaceSeparator
         $nodeOutput = ltrim($nodeOutput);
+        $tagSpaceSeparator = $this->resolveTagSpaceSeparator($phpDocTagNode);
         if ($nodeOutput && $tagSpaceSeparator !== '') {
             $output .= $tagSpaceSeparator;
         }

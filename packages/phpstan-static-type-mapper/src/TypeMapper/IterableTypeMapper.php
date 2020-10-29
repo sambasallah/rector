@@ -86,12 +86,12 @@ final class IterableTypeMapper implements TypeMapperInterface
     private function convertUnionArrayTypeNodesToArrayTypeOfUnionTypeNodes(
         UnionTypeNode $unionTypeNode
     ): AttributeAwareUnionTypeNode {
-        $unionedArrayType = [];
         foreach ($unionTypeNode->types as $unionedType) {
             if ($unionedType instanceof UnionTypeNode) {
                 foreach ($unionedType->types as $key => $subUnionedType) {
                     $unionedType->types[$key] = new ArrayTypeNode($subUnionedType);
                 }
+                $unionedArrayType = [];
 
                 $unionedArrayType[] = $unionedType;
                 continue;

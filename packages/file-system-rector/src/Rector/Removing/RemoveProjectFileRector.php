@@ -31,9 +31,8 @@ final class RemoveProjectFileRector extends AbstractFileSystemRector implements 
 
         $projectDirectory = getcwd();
 
-        $relativePathInProject = $smartFileInfo->getRelativeFilePathFromDirectory($projectDirectory);
-
         foreach ($this->filePathsToRemove as $filePathsToRemove) {
+            $relativePathInProject = $smartFileInfo->getRelativeFilePathFromDirectory($projectDirectory);
             if ($relativePathInProject !== $filePathsToRemove) {
                 continue;
             }

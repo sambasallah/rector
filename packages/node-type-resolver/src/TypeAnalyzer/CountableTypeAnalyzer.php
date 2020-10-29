@@ -54,13 +54,12 @@ final class CountableTypeAnalyzer
 
     private function isCountableObjectType(Type $type): bool
     {
-        $countableObjectTypes = [
-            new ObjectType(Countable::class),
-            new ObjectType('SimpleXMLElement'),
-            new ObjectType('ResourceBundle'),
-        ];
-
         if ($type instanceof UnionType) {
+            $countableObjectTypes = [
+                new ObjectType(Countable::class),
+                new ObjectType('SimpleXMLElement'),
+                new ObjectType('ResourceBundle'),
+            ];
             return $this->isCountableUnionType($type, $countableObjectTypes);
         }
 

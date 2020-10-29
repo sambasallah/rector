@@ -45,13 +45,12 @@ final class AnnotationReaderFactory
     {
         AnnotationRegistry::registerLoader('class_exists');
 
-        // generated
-        $annotationReader = $this->createAnnotationReader();
-
         // without this the reader will try to resolve them and fails with an exception
         // don't forget to add it to "stubs/Doctrine/Empty" directory, because the class needs to exists
         // and run "composer dump-autoload", because the directory is loaded by classmap
         foreach (self::IGNORED_NAMES as $ignoredName) {
+            // generated
+            $annotationReader = $this->createAnnotationReader();
             $annotationReader::addGlobalIgnoredName($ignoredName);
         }
 

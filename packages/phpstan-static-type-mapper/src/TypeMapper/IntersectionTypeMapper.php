@@ -37,9 +37,8 @@ final class IntersectionTypeMapper implements TypeMapperInterface
      */
     public function mapToPHPStanPhpDocTypeNode(Type $type): TypeNode
     {
-        $intersectionTypesNodes = [];
-
         foreach ($type->getTypes() as $intersectionedType) {
+            $intersectionTypesNodes = [];
             $intersectionTypesNodes[] = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($intersectionedType);
         }
 
@@ -62,9 +61,8 @@ final class IntersectionTypeMapper implements TypeMapperInterface
      */
     public function mapToDocString(Type $type, ?Type $parentType = null): string
     {
-        $stringTypes = [];
-
         foreach ($type->getTypes() as $unionedType) {
+            $stringTypes = [];
             $stringTypes[] = $this->phpStanStaticTypeMapper->mapToDocString($unionedType);
         }
 

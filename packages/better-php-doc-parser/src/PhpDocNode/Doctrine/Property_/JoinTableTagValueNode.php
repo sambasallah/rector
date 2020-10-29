@@ -107,9 +107,8 @@ final class JoinTableTagValueNode extends AbstractDoctrineTagValueNode implement
      */
     public function provide(): array
     {
-        $items = [];
-
         foreach ($this->joinColumns as $joinColumn) {
+            $items = [];
             $items[$joinColumn->getShortName()] = $joinColumn->getAttributableItems();
         }
 
@@ -147,9 +146,8 @@ final class JoinTableTagValueNode extends AbstractDoctrineTagValueNode implement
      */
     private function createJoinColumnItems(string $joinColumnsKey, string $inverseJoinColumnsKey): array
     {
-        $items = [];
-
         if ($this->joinColumns !== []) {
+            $items = [];
             $items[$joinColumnsKey] = $this->printNestedTag(
                 $this->joinColumns,
                 false,

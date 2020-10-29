@@ -36,10 +36,9 @@ final class TemplateFileSystem
         RectorRecipe $rectorRecipe,
         string $targetDirectory
     ): string {
-        $destination = $smartFileInfo->getRelativeFilePathFromDirectory(TemplateFinder::TEMPLATES_DIRECTORY);
-
         // normalize core package
         if (! $rectorRecipe->isRectorRepository()) {
+            $destination = $smartFileInfo->getRelativeFilePathFromDirectory(TemplateFinder::TEMPLATES_DIRECTORY);
             // special keyword for 3rd party Rectors, not for core Github contribution
             $destination = Strings::replace($destination, self::PACKAGE_RULES_PATH_REGEX, 'utils/rector');
         }

@@ -72,11 +72,10 @@ final class PhpDocTypeChanger
             return;
         }
 
-        // override existing type
-        $newPHPStanPhpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType);
-
         $currentVarTagValueNode = $phpDocInfo->getVarTagValueNode();
         if ($currentVarTagValueNode !== null) {
+            // override existing type
+            $newPHPStanPhpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType);
             // only change type
             $currentVarTagValueNode->type = $newPHPStanPhpDocType;
         } else {
@@ -95,12 +94,11 @@ final class PhpDocTypeChanger
         if ($this->typeComparator->areTypesEquals($phpDocInfo->getReturnType(), $newType)) {
             return;
         }
-
-        // override existing type
-        $newPHPStanPhpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType);
         $currentReturnTagValueNode = $phpDocInfo->getReturnTagValue();
 
         if ($currentReturnTagValueNode !== null) {
+            // override existing type
+            $newPHPStanPhpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType);
             // only change type
             $currentReturnTagValueNode->type = $newPHPStanPhpDocType;
         } else {
@@ -115,8 +113,6 @@ final class PhpDocTypeChanger
 
     public function changeParamType(PhpDocInfo $phpDocInfo, Type $newType, Param $param, string $paramName): void
     {
-        $phpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType);
-
         $paramTagValueNode = $phpDocInfo->getParamTagValueByName($paramName);
 
         // override existing type
@@ -130,6 +126,7 @@ final class PhpDocTypeChanger
             if ($this->typeComparator->areTypesEquals($currentType, $newType)) {
                 return;
             }
+            $phpDocType = $this->staticTypeMapper->mapPHPStanTypeToPHPStanPhpDocTypeNode($newType);
 
             $paramTagValueNode->type = $phpDocType;
         } else {

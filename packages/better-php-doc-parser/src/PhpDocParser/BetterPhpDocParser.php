@@ -139,14 +139,11 @@ final class BetterPhpDocParser extends PhpDocParser
      */
     public function parse(TokenIterator $tokenIterator): PhpDocNode
     {
-        $originalTokenIterator = clone $tokenIterator;
-
         $tokenIterator->consumeTokenType(Lexer::TOKEN_OPEN_PHPDOC);
 
         $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL);
-
-        $children = [];
         if (! $tokenIterator->isCurrentTokenType(Lexer::TOKEN_CLOSE_PHPDOC)) {
+            $children = [];
             $children[] = $this->parseChildAndStoreItsPositions($tokenIterator);
 
             while ($tokenIterator->tryConsumeTokenType(Lexer::TOKEN_PHPDOC_EOL) && ! $tokenIterator->isCurrentTokenType(
@@ -158,6 +155,7 @@ final class BetterPhpDocParser extends PhpDocParser
 
         // might be in the middle of annotations
         $tokenIterator->tryConsumeTokenType(Lexer::TOKEN_CLOSE_PHPDOC);
+        $originalTokenIterator = clone $tokenIterator;
 
         $phpDocNode = new PhpDocNode(array_values($children));
 
@@ -177,9 +175,6 @@ final class BetterPhpDocParser extends PhpDocParser
 
     public function parseTagValue(TokenIterator $tokenIterator, string $tag): PhpDocTagValueNode
     {
-        // needed for reference support in params, see https://github.com/rectorphp/rector/issues/1734
-        $tagValueNode = null;
-
         $currentPhpNode = $this->currentNodeProvider->getNode();
         if ($currentPhpNode === null) {
             throw new ShouldNotHappenException();
@@ -188,6 +183,8 @@ final class BetterPhpDocParser extends PhpDocParser
         if (strtolower($tag) === '@param') {
             // to prevent circular reference of this service
             $this->paramPhpDocNodeFactory->setPhpDocParser($this);
+            // needed for reference support in params, see https://github.com/rectorphp/rector/issues/1734
+            $tagValueNode = null;
             $tagValueNode = $this->paramPhpDocNodeFactory->createFromTokens($tokenIterator);
         } elseif (strtolower($tag) === '@dataprovider') {
             $this->phpUnitDataProviderDocNodeFactory->setPhpDocParser($this);
@@ -210,12 +207,12 @@ final class BetterPhpDocParser extends PhpDocParser
         }
 
         $originalTokenIterator = clone $tokenIterator;
-        $docContent = $this->annotationContentResolver->resolveFromTokenIterator($originalTokenIterator);
 
         // fallback to original parser
         if ($tagValueNode === null) {
             $tagValueNode = parent::parseTagValue($tokenIterator, $tag);
         }
+        $docContent = $this->annotationContentResolver->resolveFromTokenIterator($originalTokenIterator);
 
         return $this->attributeAwareNodeFactory->createFromNode($tagValueNode, $docContent);
     }
@@ -236,12 +233,12 @@ final class BetterPhpDocParser extends PhpDocParser
     private function parseChildAndStoreItsPositions(TokenIterator $tokenIterator): Node
     {
         $originalTokenIterator = clone $tokenIterator;
-        $docContent = $this->annotationContentResolver->resolveFromTokenIterator($originalTokenIterator);
 
         $tokenStart = $this->getTokenIteratorIndex($tokenIterator);
-        $phpDocNode = $this->privatesCaller->callPrivateMethod($this, 'parseChild', $tokenIterator);
 
         $tokenEnd = $this->resolveTokenEnd($tokenIterator);
+        $docContent = $this->annotationContentResolver->resolveFromTokenIterator($originalTokenIterator);
+        $phpDocNode = $this->privatesCaller->callPrivateMethod($this, 'parseChild', $tokenIterator);
 
         $startAndEnd = new StartAndEnd($tokenStart, $tokenEnd);
 
@@ -253,12 +250,11 @@ final class BetterPhpDocParser extends PhpDocParser
         );
 
         if ($possibleMultilineText) {
-            // add original text, for keeping trimmed spaces
-            $originalContent = $this->getOriginalContentFromTokenIterator($tokenIterator);
-
             // we try to match original content without trimmed spaces
             $currentTextPattern = '#' . preg_quote($possibleMultilineText, '#') . '#s';
             $currentTextPattern = Strings::replace($currentTextPattern, '#(\s)+#', '\s+');
+            // add original text, for keeping trimmed spaces
+            $originalContent = $this->getOriginalContentFromTokenIterator($tokenIterator);
             $match = Strings::match($originalContent, $currentTextPattern);
 
             if (isset($match[0])) {
@@ -271,9 +267,8 @@ final class BetterPhpDocParser extends PhpDocParser
 
     private function resolveTag(TokenIterator $tokenIterator): string
     {
-        $tag = $tokenIterator->currentTokenValue();
-
         $tokenIterator->next();
+        $tag = $tokenIterator->currentTokenValue();
 
         // basic annotation
         if (Strings::match($tag, self::TAG_REGEX)) {
@@ -285,13 +280,12 @@ final class BetterPhpDocParser extends PhpDocParser
         if ($tokenIterator->currentTokenType() !== Lexer::TOKEN_IDENTIFIER) {
             return $tag;
         }
-        $oldTag = $tag;
 
         $tag .= $tokenIterator->currentTokenValue();
 
         $isTagMatchedByFactories = (bool) $this->matchTagToPhpDocNodeFactory($tag);
         if (! $isTagMatchedByFactories) {
-            return $oldTag;
+            return $tag;
         }
 
         $tokenIterator->next();
@@ -345,7 +339,6 @@ final class BetterPhpDocParser extends PhpDocParser
     private function getOriginalContentFromTokenIterator(TokenIterator $tokenIterator): string
     {
         $originalTokens = $this->privatesAccessor->getPrivateProperty($tokenIterator, 'tokens');
-        $originalContent = '';
 
         foreach ($originalTokens as $originalToken) {
             // skip opening
@@ -361,6 +354,7 @@ final class BetterPhpDocParser extends PhpDocParser
             if ($originalToken[1] === Lexer::TOKEN_PHPDOC_EOL) {
                 $originalToken[0] = PHP_EOL;
             }
+            $originalContent = '';
 
             $originalContent .= $originalToken[0];
         }

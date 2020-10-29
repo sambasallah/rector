@@ -135,12 +135,10 @@ final class ParsedClassConstFetchNodeCollector
     private function getConstantsDefinedInClass(string $className): array
     {
         $reflectionClass = new ReflectionClass($className);
-
-        $currentClassConstants = array_keys($reflectionClass->getConstants());
         $parentClassReflection = $reflectionClass->getParentClass();
 
         if (! $parentClassReflection) {
-            return $currentClassConstants;
+            return array_keys($reflectionClass->getConstants());
         }
 
         $parentClassConstants = array_keys($parentClassReflection->getConstants());

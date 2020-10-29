@@ -23,12 +23,11 @@ final class ClassMethodParamVendorLockResolver extends AbstractNodeVendorLockRes
             return false;
         }
 
-        /** @var string $methodName */
-        $methodName = $this->nodeNameResolver->getName($classMethod);
-
         /** @var string|null $parentClassName */
         $parentClassName = $classMethod->getAttribute(AttributeKey::PARENT_CLASS_NAME);
         if ($parentClassName !== null) {
+            /** @var string $methodName */
+            $methodName = $this->nodeNameResolver->getName($classMethod);
             $vendorLock = $this->isParentClassVendorLocking($paramPosition, $parentClassName, $methodName);
             if ($vendorLock !== null) {
                 return $vendorLock;

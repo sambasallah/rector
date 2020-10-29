@@ -35,11 +35,10 @@ final class AttributeAwareMethodTagValueNodeFactory implements AttributeNodeAwar
      */
     public function create(Node $node, string $docContent): AttributeAwareNodeInterface
     {
-        $returnType = $this->attributizeReturnType($node, $docContent);
-
         foreach ($node->parameters as $key => $parameter) {
             $node->parameters[$key] = $this->attributeAwareNodeFactory->createFromNode($parameter, $docContent);
         }
+        $returnType = $this->attributizeReturnType($node, $docContent);
 
         return new AttributeAwareMethodTagValueNode(
             $node->isStatic,

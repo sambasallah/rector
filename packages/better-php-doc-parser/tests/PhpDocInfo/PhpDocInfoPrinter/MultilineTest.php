@@ -31,9 +31,9 @@ final class MultilineTest extends AbstractPhpDocInfoPrinterTest
     public function test(string $docFilePath, Node $node): void
     {
         $docComment = $this->smartFileSystem->readFile($docFilePath);
-        $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($docComment, $node);
 
         $fileInfo = new SmartFileInfo($docFilePath);
+        $phpDocInfo = $this->createPhpDocInfoFromDocCommentAndNode($docComment, $node);
         $relativeFilePathFromCwd = $fileInfo->getRelativeFilePathFromCwd();
 
         $this->assertSame(

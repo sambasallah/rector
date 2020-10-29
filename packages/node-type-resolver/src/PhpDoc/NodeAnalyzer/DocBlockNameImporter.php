@@ -90,9 +90,8 @@ final class DocBlockNameImporter
 
     public function importNames(PhpDocInfo $phpDocInfo, Node $phpParserNode): bool
     {
-        $attributeAwarePhpDocNode = $phpDocInfo->getPhpDocNode();
-
         $this->hasPhpDocChanged = false;
+        $attributeAwarePhpDocNode = $phpDocInfo->getPhpDocNode();
 
         $this->phpDocNodeTraverser->traverseWithCallable($attributeAwarePhpDocNode, '', function (
             PhpDocParserNode $docNode

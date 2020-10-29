@@ -45,9 +45,8 @@ final class PostFileProcessor
      */
     private function sortByPriority(array $postRectors): array
     {
-        $postRectorsByPriority = [];
-
         foreach ($postRectors as $postRector) {
+            $postRectorsByPriority = [];
             if (isset($postRectorsByPriority[$postRector->getPriority()])) {
                 throw new ShouldNotHappenException();
             }

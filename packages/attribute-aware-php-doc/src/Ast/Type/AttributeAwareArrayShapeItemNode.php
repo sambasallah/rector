@@ -54,8 +54,8 @@ final class AttributeAwareArrayShapeItemNode extends ArrayShapeItemNode implemen
      */
     private function createKeyWithSpacePattern($keyName, bool $optional): string
     {
-        $keyNameString = (string) $keyName;
         if ($optional) {
+            $keyNameString = (string) $keyName;
             $keyNameString .= '?';
         }
 

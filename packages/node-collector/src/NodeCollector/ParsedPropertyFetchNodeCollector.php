@@ -55,8 +55,6 @@ final class ParsedPropertyFetchNodeCollector
             return;
         }
 
-        $propertyType = $this->resolvePropertyCallerType($node);
-
         // make sure name is valid
         if ($node->name instanceof StaticCall || $node->name instanceof MethodCall) {
             return;
@@ -66,6 +64,7 @@ final class ParsedPropertyFetchNodeCollector
         if ($propertyName === null) {
             return;
         }
+        $propertyType = $this->resolvePropertyCallerType($node);
 
         $this->addPropertyFetchWithTypeAndName($propertyType, $node, $propertyName);
     }

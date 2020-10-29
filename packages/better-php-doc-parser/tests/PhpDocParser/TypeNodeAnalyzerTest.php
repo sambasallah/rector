@@ -43,9 +43,8 @@ final class TypeNodeAnalyzerTest extends AbstractKernelTestCase
 
     public function provideDataForArrayType(): Iterator
     {
-        $arrayTypeNode = new ArrayTypeNode(new IdentifierTypeNode(self::INT));
-
         yield [new IdentifierTypeNode(self::INT), false];
+        $arrayTypeNode = new ArrayTypeNode(new IdentifierTypeNode(self::INT));
         yield [$arrayTypeNode, true];
         yield [new UnionTypeNode([$arrayTypeNode]), true];
     }

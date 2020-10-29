@@ -140,8 +140,6 @@ abstract class AbstractTagValueNode implements AttributeAwareNodeInterface, PhpD
         ?string $openingSpace,
         ?string $closingSpace
     ): string {
-        $tagValueNodesAsString = $this->printTagValueNodesSeparatedByComma($tagValueNodes);
-
         if ($openingSpace === null) {
             $openingSpace = PHP_EOL . '    ';
         }
@@ -149,6 +147,7 @@ abstract class AbstractTagValueNode implements AttributeAwareNodeInterface, PhpD
         if ($closingSpace === null) {
             $closingSpace = PHP_EOL;
         }
+        $tagValueNodesAsString = $this->printTagValueNodesSeparatedByComma($tagValueNodes);
 
         return sprintf(
             '{%s%s%s%s}',
@@ -161,12 +160,11 @@ abstract class AbstractTagValueNode implements AttributeAwareNodeInterface, PhpD
 
     protected function resolveOriginalContentSpacingAndOrder(?string $originalContent): void
     {
-        $tagValueNodeConfigurationFactory = new TagValueNodeConfigurationFactory();
-
         // prevent override
         if ($this->tagValueNodeConfiguration !== null) {
             throw new ShouldNotHappenException();
         }
+        $tagValueNodeConfigurationFactory = new TagValueNodeConfigurationFactory();
 
         $this->tagValueNodeConfiguration = $tagValueNodeConfigurationFactory->createFromOriginalContent(
             $originalContent,
@@ -223,15 +221,14 @@ abstract class AbstractTagValueNode implements AttributeAwareNodeInterface, PhpD
         if ($tagValueNodes === []) {
             return '';
         }
-
-        $itemsAsStrings = [];
         foreach ($tagValueNodes as $tagValueNode) {
-            $item = '';
             if ($tagValueNode instanceof TagAwareNodeInterface) {
+                $item = '';
                 $item .= $tagValueNode->getTag();
             }
 
             $item .= (string) $tagValueNode;
+            $itemsAsStrings = [];
 
             $itemsAsStrings[] = $item;
         }

@@ -69,8 +69,6 @@ final class ClassChildAnalyzer
         if ($className === null) {
             return [];
         }
-
-        $childClasses = [];
         foreach (get_declared_classes() as $declaredClass) {
             if (! is_a($declaredClass, $className, true)) {
                 continue;
@@ -79,6 +77,7 @@ final class ClassChildAnalyzer
             if ($declaredClass === $className) {
                 continue;
             }
+            $childClasses = [];
 
             $childClasses[] = $declaredClass;
         }

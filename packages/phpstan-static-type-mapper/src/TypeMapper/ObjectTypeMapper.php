@@ -50,13 +50,12 @@ final class ObjectTypeMapper implements TypeMapperInterface, PHPStanStaticTypeMa
         }
 
         if ($type instanceof GenericObjectType) {
-            $identifierTypeNode = new IdentifierTypeNode('\\' . $type->getClassName());
-
-            $genericTypeNodes = [];
             foreach ($type->getTypes() as $genericType) {
+                $genericTypeNodes = [];
                 $typeNode = $this->phpStanStaticTypeMapper->mapToPHPStanPhpDocTypeNode($genericType);
                 $genericTypeNodes[] = $typeNode;
             }
+            $identifierTypeNode = new IdentifierTypeNode('\\' . $type->getClassName());
 
             return new AttributeAwareGenericTypeNode($identifierTypeNode, $genericTypeNodes);
         }

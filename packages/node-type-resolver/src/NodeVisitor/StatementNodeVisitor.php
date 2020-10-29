@@ -41,8 +41,8 @@ final class StatementNodeVisitor extends NodeVisitorAbstract
         }
 
         if (property_exists($node, 'stmts')) {
-            $previous = $node;
             foreach ((array) $node->stmts as $stmt) {
+                $previous = $node;
                 $stmt->setAttribute(AttributeKey::PREVIOUS_STATEMENT, $previous);
                 $stmt->setAttribute(AttributeKey::CURRENT_STATEMENT, $stmt);
                 $previous = $stmt;

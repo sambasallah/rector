@@ -25,19 +25,14 @@ final class WhitespaceDetector
      */
     public function detectOldWhitespaces(Node $node, array $tokens, StartAndEnd $startAndEnd): array
     {
-        $oldWhitespaces = [];
-
-        $start = $startAndEnd->getStart();
         // this is needed, because of 1 token taken from tokens and added annotation name: "ORM" + "\X" → "ORM\X"
         // todo, this might be needed to be dynamic, based on taken tokens count (some Collector?)
         if ($node instanceof DoctrineTagNodeInterface) {
+            $start = $startAndEnd->getStart();
             --$start;
         }
 
         for ($i = $start; $i < $startAndEnd->getEnd(); ++$i) {
-            /** @var string $tokenValue */
-            $tokenValue = $tokens[$i][0];
-
             if ($tokens[$i][1] === Lexer::TOKEN_HORIZONTAL_WS) {
                 // give back "\s+\*" as well
                 // do not overlap to previous node
@@ -48,9 +43,12 @@ final class WhitespaceDetector
                 ) {
                     $previousTokenValue = $tokens[$i - 1][0];
                     if (Strings::match($previousTokenValue, self::SPACE_BEFORE_ASTERISK_REGEX)) {
+                        /** @var string $tokenValue */
+                        $tokenValue = $tokens[$i][0];
                         $tokenValue = $previousTokenValue . $tokenValue;
                     }
                 }
+                $oldWhitespaces = [];
 
                 $oldWhitespaces[] = $tokenValue;
                 continue;
